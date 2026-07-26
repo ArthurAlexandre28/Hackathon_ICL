@@ -55,12 +55,22 @@ every flag (a cold, a bad night's sleep, a hard test, nothing at all) because a 
 is a moved number, not a diagnosis. Opening an *unflagged* child says so too: no signal does
 not mean a child is fine.
 
-## Run it
+## What's in here
 
-Open `index.html` in any browser. No install, no server, no accounts.
+| File | What it is |
+|---|---|
+| `index.html` | The prototype. Open in any browser — no install, no server, no accounts. |
+| `Sunny-Pitch-Deck.pptx` | 12-slide pitch deck, with timed speaker notes and prepared Q&A on every slide. |
+| `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
 
 ```bash
 open index.html
+```
+
+To regenerate the deck after editing `deck-build.js`:
+
+```bash
+npm install pptxgenjs && node deck-build.js
 ```
 
 ## Demo script (3 minutes)
