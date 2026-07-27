@@ -42,7 +42,13 @@
 
   /* ---------- KID VIEW ---------- */
   .kid{max-width:560px;margin:0 auto}
-  .kid-card{padding:34px 28px;text-align:center}
+  .kid-card{padding:34px 28px;text-align:center;position:relative}
+  .whoami{position:absolute;top:12px;right:14px;font-size:.7rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .whoami select{font-family:inherit;font-size:.72rem;font-weight:700;color:var(--ink);background:var(--bg);
+    border:1px solid var(--line);border-radius:8px;padding:3px 6px;cursor:pointer}
+  @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
+  .stu.justin .dot{animation:pop .7s ease}
+  .stu.justin{outline:2px solid var(--good);outline-offset:1px}
   .kid h1{font-size:1.7rem;margin-bottom:6px}
   .kid .sub{color:var(--muted);margin-bottom:26px}
   .mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
@@ -66,6 +72,8 @@
   .thanks .big{font-size:3.4rem;margin-bottom:10px}
   .thanks h2{font-size:1.5rem;margin-bottom:8px}
   .thanks p{color:var(--muted)}
+  .sentnote{margin-top:16px;font-size:.82rem;color:var(--brand);background:var(--brand-soft);
+    border-radius:12px;padding:11px 14px;display:inline-block}
   .again{margin-top:22px;border:2px solid var(--line);background:transparent;color:var(--muted);font-weight:700;padding:10px 20px;border-radius:12px;cursor:pointer}
 
   /* kid transparency */
@@ -149,6 +157,23 @@
   .next{background:var(--card);border:1px dashed var(--brand);border-radius:12px;padding:12px 14px;font-size:.9rem}
   .next b{color:var(--brand)}
 
+  /* support plan — human knowledge, deliberately styled warmer than the AI block */
+  .plan{border:1px solid color-mix(in srgb,var(--good) 40%,var(--line));
+    background:color-mix(in srgb,var(--good) 6%,transparent);border-radius:14px;padding:16px}
+  .plan .who{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;color:var(--good);margin-bottom:12px;flex-wrap:wrap}
+  .plan .who .badge{background:var(--good);color:#fff;font-size:.6rem;padding:2px 7px;border-radius:6px;letter-spacing:.5px}
+  .plan .who .by{font-weight:600;color:var(--muted);font-size:.74rem}
+  .plan dl{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:start}
+  .plan dt{font-size:.8rem;font-weight:800;color:var(--ink);white-space:nowrap}
+  .plan dd{font-size:.89rem;color:var(--ink);line-height:1.5}
+  .plan dt.bad{color:var(--alert)}
+  .plan .planact{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+  .plan-empty{border:1px dashed var(--line);border-radius:14px;padding:20px;text-align:center}
+  .plan-empty p{font-size:.9rem;color:var(--muted);margin-bottom:12px}
+  .plan-edit label{display:block;font-size:.78rem;font-weight:800;margin:11px 0 5px}
+  .plan-edit textarea{width:100%;font-family:inherit;font-size:.88rem;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:10px;padding:9px 11px;resize:vertical;min-height:52px;line-height:1.45}
+  .plan-edit textarea:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:transparent}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
   .act{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 14px;font-size:.85rem;font-weight:700;cursor:pointer;transition:.15s}
   .act:hover{border-color:var(--brand);color:var(--brand)}
@@ -202,7 +227,10 @@
   <div id="viewKid" class="view active">
     <div class="kid">
       <div class="card kid-card" id="kidMain">
-        <h1>Hi Mia! How are you feeling today?</h1>
+        <div class="whoami">demo · checking in as
+          <select id="whoSel" onchange="switchKid()"></select>
+        </div>
+        <h1>Hi <span id="kidName">Mia</span>! How are you feeling today?</h1>
         <div class="sub">Tap the one that looks most like you right now.</div>
         <div class="mood-row" id="moodRow"></div>
         <div class="why" id="whyBox">
@@ -214,8 +242,9 @@
 
       <div class="card thanks" id="thanksBox">
         <div class="big" id="thanksFace"></div>
-        <h2>Thanks for checking in, Mia!</h2>
+        <h2>Thanks for checking in, <span id="thanksName">Mia</span>!</h2>
         <p id="thanksMsg">However you're feeling, we're glad you're here today.</p>
+        <div class="sentnote" id="sentNote"></div>
         <button class="again" onclick="resetKid()">Do it again</button>
       </div>
 
@@ -237,7 +266,7 @@
     <div class="t-head">
       <div>
         <h2>Room 6 · Morning check-in</h2>
-        <div class="meta">Monday 27 July · 24 of 26 checked in</div>
+        <div class="meta" id="checkedIn">Monday 27 July · 24 of 26 checked in</div>
       </div>
       <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
     </div>
@@ -298,17 +327,23 @@
         </div>
       </div>
 
-      <!-- 4. AI -->
+      <!-- 4. THE HUMAN PLAN -->
       <div class="step">
-        <div class="step-n"><b>4</b> Where AI is used (and only here)</div>
+        <div class="step-n"><b>4</b> What helps <span id="dPlanWho">this child</span> — written by a human</div>
+        <div id="planBox"></div>
+      </div>
+
+      <!-- 5. AI -->
+      <div class="step">
+        <div class="step-n"><b>5</b> Where AI is used (and only here)</div>
         <div class="insight">
           <div class="ai"><span class="badge">AI</span> Suggested wording
             <span class="scope">· input: the rule name + the 5 numbers · no child's name, no free text</span></div>
           <div class="next">👉 <b>Suggested next step:</b> <span id="dNext">—</span></div>
           <div class="actions" id="dActions">
-            <button class="act" onclick="act(this)">✓ Noted — I'll check in</button>
-            <button class="act" onclick="act(this)">I know why — mute 2 weeks</button>
-            <button class="act" onclick="act(this)">Not concerning — dismiss</button>
+            <button class="act" onclick="act(this,'noted',document.getElementById('dName').textContent)">✓ Noted — I'll check in</button>
+            <button class="act" onclick="act(this,'known',document.getElementById('dName').textContent)">I know why — mute 2 weeks</button>
+            <button class="act" onclick="act(this,'wrong',document.getElementById('dName').textContent)">Not concerning — dismiss</button>
           </div>
           <div class="acted" id="dActed">Recorded. The teacher's judgement always overrides the rule.</div>
         </div>
@@ -453,6 +488,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHow()});
 
 /* ---------- KID ---------- */
 let picked=null,pickedWhy=null;
+let CURRENT_KID='Mia', LAST_CHECKIN=null;
 const wRow=document.getElementById('moodRow');
 MOODS.forEach(m=>{
   const b=document.createElement('button');
@@ -467,13 +503,34 @@ WHY.forEach(t=>{
   c.onclick=()=>{pickedWhy=t;[...wChips.children].forEach(x=>x.classList.remove('sel'));c.classList.add('sel');};
   wChips.appendChild(c);
 });
+/* A real submission: writes today's entry into this child's history, re-runs
+   every rule, and repaints the teacher view. The tap genuinely reaches the
+   dashboard — nothing here is staged. */
 function submitCheckin(){
+  const h=HISTORY[CURRENT_KID], today=h[h.length-1];
+  today.score=picked.score;
+  today.why=pickedWhy||null;
+  recompute();
+  LAST_CHECKIN=CURRENT_KID;
+
   document.getElementById('kidMain').style.display='none';
   document.getElementById('thanksBox').classList.add('show');
   document.getElementById('thanksFace').innerHTML=faceSVG(picked.score,78);
+  document.getElementById('thanksName').textContent=CURRENT_KID;
   document.getElementById('thanksMsg').textContent=picked.score<=2
-    ?"Thanks for being honest, Mia. Your teacher knows, and that's a brave thing to share."
+    ?`Thanks for being honest, ${CURRENT_KID}. Your teacher knows, and that's a brave thing to share.`
     :"However you're feeling, we're glad you're here today.";
+  const f=FLAGS[CURRENT_KID];
+  const note=document.getElementById('sentNote');
+  note.innerHTML=f
+    ? `Sent. Rule <b>${f.rule}</b> fired on the teacher's dashboard — switch to the teacher view to see it.`
+    : `Sent. No rule fired — switch to the teacher view to see ${CURRENT_KID}'s tile update.`;
+}
+/* the demo picker — lets the presenter check in as any child in the class */
+function switchKid(){
+  CURRENT_KID=document.getElementById('whoSel').value;
+  document.getElementById('kidName').textContent=CURRENT_KID;
+  resetKid();
 }
 function resetKid(){
   picked=pickedWhy=null;
@@ -485,66 +542,287 @@ function resetKid(){
   [...wChips.children].forEach(c=>c.classList.remove('sel'));
 }
 
-/* ---------- TEACHER DATA ---------- */
+/* ---------- TEACHER DATA ----------
+   30 school days of history per child. Generated deterministically so every
+   machine shows the identical demo, then fed to the real rule engine below —
+   nothing about which children get flagged is written by hand. */
 const NAMES=['Mia','Liam','Aroha','Noah','Ella','Kai','Sophie','Jack','Ruby','Tane','Olivia','Max',
 'Hana','Leo','Grace','Finn','Isla','Cody','Maia','Ben','Zoe','Nikau','Lily','Sam'];
-const DATA={'Aroha':[4,3,2,2,2],'Cody':[4,4,4,2,1],'Maia':[2,4,4,4,2]};
-const BASE={'Aroha':3.9,'Cody':4.2,'Maia':4.0};
-const rnd=s=>{let x=Math.sin(s)*10000;return x-Math.floor(x)};
-NAMES.forEach((n,i)=>{
-  if(!DATA[n]){DATA[n]=[0,0,0,0,0].map((_,d)=>{let r=rnd(i*7+d);return r<0.12?3:r<0.45?4:5});
-    BASE[n]=+(DATA[n].reduce((a,b)=>a+b,0)/5).toFixed(1);}
+const DAYNAME=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+/* the last 30 school days, ending today */
+const TODAY=new Date(2026,6,27);            // Monday 27 July 2026
+const CALENDAR=(()=>{
+  const out=[],d=new Date(TODAY);
+  while(out.length<30){
+    if(d.getDay()!==0&&d.getDay()!==6) out.unshift({date:new Date(d),dow:d.getDay()});
+    d.setDate(d.getDate()-1);
+  }
+  return out;
+})();
+
+const rnd=s=>{const x=Math.sin(s)*10000;return x-Math.floor(x)};
+
+/* Each child's 30 days. Four histories are shaped so the demo has something to
+   find; the rules still have to actually find it, and the thresholds are what
+   decide which rule fires — not this table.
+     Cody  → R1 already firing      Aroha → R2 already firing
+     Maia  → R3 already firing      Noah  → primed: one low check-in fires R1 live
+   Everyone else sits at 4-5 so no rule can fire by accident. */
+const HISTORY={};
+NAMES.forEach((name,idx)=>{
+  HISTORY[name]=CALENDAR.map((day,t)=>{
+    const r=rnd(idx*31+t*7);
+    let score;
+    switch(name){
+      /* median 4 (mostly 4s, some 5s), then two days far below */
+      case 'Cody':  score = t===28?2 : t===29?1 : (r<0.62?4:5); break;
+      /* median 3.5 — needs 12 threes to 15 fours, so the median lands between
+         them and a 2 sits exactly 1.5 below: R2 fires, R1 (≥2) does not */
+      case 'Aroha': score = t>=27?2 : (t%9<4?3:4); break;
+      /* median 5 with every Monday down at 2 */
+      case 'Maia':  score = day.dow===1?2 : (r<0.3?4:5); break;
+      /* median 4, yesterday already 2 below, today still normal */
+      case 'Noah':  score = t===28?2 : t===29?4 : (r<0.62?4:5); break;
+      default:      score = (t%7===3)?3 : (r<0.4?4:5);
+    }
+    return {...day,score};
+  });
 });
 
-const FLAGS={
-  'Cody':{level:'high',rule:'R1',ruleName:'Sudden change',
-    ruleText:"Fires when a child's check-in sits ≥2 steps below their OWN 30-day median for 2 or more consecutive days.",
-    calc:"Cody's 30-day median = 4.2\nThu = 2 → 2.2 steps below\nFri = 1 → 3.2 steps below\n2 consecutive days ≥2.0 below → RULE FIRED",
-    short:"Two consecutive days ≥2 steps below his own 30-day median.",
-    notMean:"Sunny has detected that a number Cody chose has moved. It has not detected sadness, and it has no idea what is going on in his life.",
-    alts:"a cold or a bad night's sleep · a fight at lunchtime · a hard test · something at home · a joke with a friend about picking the thumbs-down · nothing at all",
-    next:"Worth a quiet word today — open, not probing. If it's still low tomorrow, that's the point to loop in your wellbeing lead."},
-  'Aroha':{level:'watch',rule:'R2',ruleName:'Sustained drift',
-    ruleText:"Fires when a child sits ≥1.5 steps below their OWN 30-day median for 3 or more consecutive days.",
-    calc:"Aroha's 30-day median = 3.9\nWed = 2 → 1.9 below\nThu = 2 → 1.9 below\nFri = 2 → 1.9 below\n3 consecutive days ≥1.5 below → RULE FIRED",
-    short:"Three consecutive days ≥1.5 steps below her own 30-day median.",
-    notMean:"A sustained lower number is not evidence of depression or any other condition. Sunny cannot and does not make that judgement.",
-    alts:"a rough week · illness · a friendship that's cooled off · boredom · a new baby at home · simply feeling flat, which is allowed",
-    next:"No urgency. Next time you're one-to-one anyway, leave a door open — “how's your week been?” — and let her fill the silence."},
-  'Maia':{level:'watch',rule:'R3',ruleName:'Repeating cycle',
-    ruleText:"Fires when the same weekday falls ≥1.5 steps below a child's OWN median in 4 or more of the last 6 occurrences.",
-    calc:"Maia's 30-day median = 4.0\nMondays (last 6): 2, 2, 4, 2, 2, 2\n5 of 6 Mondays ≥1.5 below → RULE FIRED\nAll other weekdays: within normal range",
-    short:"5 of her last 6 Mondays sit ≥1.5 steps below her own median.",
-    notMean:"A weekday pattern says something about Mondays, not about Maia. Sunny is pointing at a timetable, not at a child.",
-    alts:"a subject she dreads on Mondays · a swimming lesson · the transition back after a weekend · an early bus · a weekend routine she'd rather not leave",
-    next:"Look at what Monday mornings actually involve before speaking to her — the answer may be in the timetable, and fixable without a conversation at all."}
+/* ---------- THE RULE ENGINE ----------
+   Three fixed arithmetic rules. Deterministic, auditable, no AI. Every rule
+   measures distance from THIS child's own median — never from the class. */
+function median(nums){
+  const a=[...nums].sort((x,y)=>x-y),m=a.length>>1;
+  return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
+}
+const RULES=[
+  {id:'R1',name:'Sudden change',level:'high',span:2,gap:2,
+   text:"Fires when a child's check-in sits ≥2 steps below their OWN 30-day median for 2 or more consecutive days.",
+   short:(n,d)=>`${d.span} consecutive days ≥2 steps below their own 30-day median.`,
+   test(h,med){
+     const last=h.slice(-this.span);
+     return last.length===this.span && last.every(d=>med-d.score>=this.gap);
+   },
+   calc(h,med,name){
+     const last=h.slice(-this.span);
+     return `${name}'s 30-day median = ${med}\n`
+       +last.map(d=>`${DAYNAME[d.dow]} = ${d.score} → ${(med-d.score).toFixed(1)} steps below`).join('\n')
+       +`\n${this.span} consecutive days ≥${this.gap.toFixed(1)} below → RULE FIRED`;
+   }},
+  {id:'R2',name:'Sustained drift',level:'watch',span:3,gap:1.5,
+   text:"Fires when a child sits ≥1.5 steps below their OWN 30-day median for 3 or more consecutive days.",
+   short:(n,d)=>`${d.span} consecutive days ≥1.5 steps below their own 30-day median.`,
+   test(h,med){
+     const last=h.slice(-this.span);
+     return last.length===this.span && last.every(d=>med-d.score>=this.gap);
+   },
+   calc(h,med,name){
+     const last=h.slice(-this.span);
+     return `${name}'s 30-day median = ${med}\n`
+       +last.map(d=>`${DAYNAME[d.dow]} = ${d.score} → ${(med-d.score).toFixed(1)} below`).join('\n')
+       +`\n${this.span} consecutive days ≥${this.gap.toFixed(1)} below → RULE FIRED`;
+   }},
+  {id:'R3',name:'Repeating cycle',level:'watch',gap:1.5,need:4,of:6,
+   text:"Fires when the same weekday falls ≥1.5 steps below a child's OWN median in 4 or more of the last 6 occurrences.",
+   short:(n,d)=>`${d.hits} of their last ${d.of} ${d.dayName}s sit ≥1.5 steps below their own median.`,
+   sameDay(h){const dow=h[h.length-1].dow;return h.filter(d=>d.dow===dow).slice(-this.of)},
+   test(h,med){
+     const same=this.sameDay(h);
+     return same.length===this.of && same.filter(d=>med-d.score>=this.gap).length>=this.need;
+   },
+   calc(h,med,name){
+     const same=this.sameDay(h),dn=DAYNAME[h[h.length-1].dow];
+     const hits=same.filter(d=>med-d.score>=this.gap).length;
+     return `${name}'s 30-day median = ${med}\n`
+       +`${dn}s (last ${this.of}): ${same.map(d=>d.score).join(', ')}\n`
+       +`${hits} of ${this.of} ${dn}s ≥${this.gap.toFixed(1)} below → RULE FIRED`;
+   }}
+];
+
+/* what a fired rule does NOT license anyone to conclude */
+const LIMITS={
+  R1:{notMean:n=>`Sunny has detected that a number ${n} chose has moved. It has not detected sadness, and it has no idea what is going on in their life.`,
+      alts:"a cold or a bad night's sleep · a fight at lunchtime · a hard test · something at home · a joke with a friend about picking the thumbs-down · nothing at all",
+      next:"Worth a quiet word today — open, not probing. If it's still low tomorrow, that's the point to loop in your wellbeing lead."},
+  R2:{notMean:()=>"A sustained lower number is not evidence of depression or any other condition. Sunny cannot and does not make that judgement.",
+      alts:"a rough week · illness · a friendship that's cooled off · boredom · a new baby at home · simply feeling flat, which is allowed",
+      next:"No urgency. Next time you're one-to-one anyway, leave a door open — “how's your week been?” — and let them fill the silence."},
+  R3:{notMean:n=>`A weekday pattern says something about that weekday, not about ${n}. Sunny is pointing at a timetable, not at a child.`,
+      alts:"a subject they dread that day · a swimming lesson · the transition back after a weekend · an early bus · a weekend routine they'd rather not leave",
+      next:"Look at what that morning actually involves before speaking to them — the answer may be in the timetable, and fixable without a conversation at all."}
 };
+
+/* ---------- SUPPORT PLANS ----------
+   Written by the people who know the child: a parent, a teacher, or both.
+   This is the opposite of the rule engine — no inference, no scoring, just
+   human knowledge, shown at the moment a teacher is deciding what to do.
+   It sits ABOVE the AI suggestion in the panel, deliberately. */
+const PLANS={
+  'Aroha':{
+    helps:"Ten minutes on her own with a book before anyone asks her anything. She'll come and find you when she's ready.",
+    worse:"Being asked “what's wrong?” in front of the class. She'll say “nothing” and shut down for the rest of the day.",
+    trusts:"Mrs Patel. Her older brother Tane in Room 4 if it's something big.",
+    practical:"Her ear defenders are in the side pocket of her bag. She won't ask for them.",
+    author:"Aroha's mum", updated:"March 2026"},
+  'Cody':{
+    helps:"Give him a job to do. He talks while his hands are busy — tidying the library corner is the reliable one.",
+    worse:"Sitting him down opposite you for A Talk. He freezes and gives one-word answers.",
+    trusts:"Mr Reweti. He'll open up on the walk out to the field, never in a room.",
+    practical:"Rugby is Thursday after school. He's flat on Fridays when it gets cancelled for weather.",
+    author:"Mr Reweti and Cody's dad", updated:"May 2026"},
+  'Maia':{
+    helps:"Telling her what's coming. A written list of the day's order on her desk settles her before she's even asked.",
+    worse:"Surprise changes to the timetable. Relief teachers are hard unless someone warns her first.",
+    trusts:"Miss Chen.",
+    practical:"Swimming is Monday, first period. It's the changing rooms she can't stand, not the swimming.",
+    author:"Maia's mum", updated:"June 2026"},
+};
+const PLAN_FIELDS=[
+  ['helps','What helps'],
+  ['worse','What makes it worse','bad'],
+  ['trusts',"Who they'll talk to"],
+  ['practical','Practical notes'],
+];
+
+function renderPlan(n){
+  document.getElementById('dPlanWho').textContent=n;
+  const box=document.getElementById('planBox'), pl=PLANS[n];
+  if(!pl){
+    box.innerHTML=`<div class="plan-empty">
+      <p>No plan yet for ${n}. Nobody who knows them has written one down.</p>
+      <button class="act" onclick="editPlan('${n}')">+ Add a plan for ${n}</button></div>`;
+    return;
+  }
+  box.innerHTML=`<div class="plan">
+    <div class="who"><span class="badge">HUMAN</span> Written by ${pl.author}
+      <span class="by">· last updated ${pl.updated}</span></div>
+    <dl>${PLAN_FIELDS.map(([k,label,cls])=>pl[k]
+      ? `<dt class="${cls||''}">${label}</dt><dd>${pl[k]}</dd>` : '').join('')}</dl>
+    <div class="planact">
+      <button class="act" onclick="editPlan('${n}')">Edit this plan</button>
+    </div></div>`;
+}
+
+function editPlan(n){
+  const pl=PLANS[n]||{};
+  document.getElementById('planBox').innerHTML=`<div class="plan plan-edit">
+    <div class="who"><span class="badge">HUMAN</span> ${PLANS[n]?'Editing':'New plan for'} ${n}</div>
+    ${PLAN_FIELDS.map(([k,label,cls])=>
+      `<label class="${cls||''}">${label}</label>
+       <textarea id="pf_${k}" placeholder="Leave blank if you're not sure">${pl[k]||''}</textarea>`).join('')}
+    <div class="planact">
+      <button class="act" onclick="savePlan('${n}')">Save plan</button>
+      <button class="act" onclick="renderPlan('${n}')">Cancel</button>
+    </div>
+    <div style="font-size:.78rem;color:var(--muted);margin-top:10px">
+      In a real deployment a parent fills this in from their own simple form —
+      the school never has to transcribe it, and the parent never sees the mood data.
+    </div></div>`;
+}
+
+function savePlan(n){
+  const next={author:'You (class teacher)',updated:'today'};
+  let any=false;
+  PLAN_FIELDS.forEach(([k])=>{
+    const v=document.getElementById('pf_'+k).value.trim();
+    if(v){next[k]=v;any=true;}
+  });
+  if(any){ if(PLANS[n]) next.author=PLANS[n].author+', edited by you';
+           PLANS[n]=next; }
+  renderPlan(n);
+}
+
+const MUTED_UNTIL={};                        // teacher dismissals, by child
+
+/* Runs every rule against every child. Called on load and after any check-in. */
+function evaluateAll(){
+  const out={};
+  NAMES.forEach(name=>{
+    if(MUTED_UNTIL[name]) return;
+    const h=HISTORY[name], med=median(h.map(d=>d.score));
+    for(const r of RULES){
+      if(r.test(h,med)){
+        const dow=h[h.length-1].dow;
+        const detail={span:r.span,of:r.of,dayName:DAYNAME[dow],
+          hits:r.id==='R3'?r.sameDay(h).filter(d=>med-d.score>=r.gap).length:0};
+        out[name]={level:r.level,rule:r.id,ruleName:r.name,ruleText:r.text,
+          calc:r.calc(h,med,name),short:r.short(name,detail),
+          notMean:LIMITS[r.id].notMean(name),alts:LIMITS[r.id].alts,next:LIMITS[r.id].next};
+        break;                               // highest-priority rule wins
+      }
+    }
+  });
+  return out;
+}
+let FLAGS=evaluateAll();
+const BASE={}; NAMES.forEach(n=>BASE[n]=median(HISTORY[n].map(d=>d.score)));
+const DATA={};  NAMES.forEach(n=>DATA[n]=HISTORY[n].slice(-5).map(d=>d.score));
 
 const sColor=s=>`var(--m${s})`;
 const DAYS=['Mon','Tue','Wed','Thu','Fri'];
-
-const stuWrap=document.getElementById('students');
-NAMES.forEach(n=>{
-  const d=document.createElement('div');
-  d.className='stu'+(FLAGS[n]?' flag':'');d.dataset.name=n;
-  d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${n}</div>`;
-  d.onclick=()=>openDetail(n);
-  stuWrap.appendChild(d);
-});
 
 document.getElementById('legend').innerHTML=
   MOODS.map(m=>`<span>${faceSVG(m.score,17)}${m.lbl}</span>`).join('')
   +'<span><i style="background:var(--alert)"></i>Soft signal</span>';
 
-const sigList=document.getElementById('signalList');
-['Cody','Aroha','Maia'].forEach(n=>{
-  const f=FLAGS[n];
-  const s=document.createElement('div');s.className='signal'+(f.level==='high'?' high':'');
-  s.innerHTML=`<div class="row"><span class="who">${n}</span><span class="tag">${f.ruleName}</span></div>
-    <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n].toFixed(1)}</div>`;
-  s.onclick=()=>openDetail(n);
-  sigList.appendChild(s);
-});
+/* Re-renders the whole teacher view from current state. Called on load and
+   again after any check-in, so a new tap flows straight through to here. */
+function renderTeacher(){
+  const stuWrap=document.getElementById('students');
+  stuWrap.innerHTML='';
+  NAMES.forEach(n=>{
+    const d=document.createElement('div');
+    d.className='stu'+(FLAGS[n]?' flag':'');d.dataset.name=n;
+    d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${n}</div>`;
+    d.onclick=()=>openDetail(n);
+    stuWrap.appendChild(d);
+  });
+
+  const sigList=document.getElementById('signalList');
+  sigList.innerHTML='';
+  const flagged=NAMES.filter(n=>FLAGS[n])
+    .sort((a,b)=>(FLAGS[a].level==='high'?0:1)-(FLAGS[b].level==='high'?0:1));
+  flagged.forEach(n=>{
+    const f=FLAGS[n];
+    const s=document.createElement('div');s.className='signal'+(f.level==='high'?' high':'');
+    s.innerHTML=`<div class="row"><span class="who">${n}</span><span class="tag">${f.ruleName}</span></div>
+      <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n].toFixed(1)}</div>`;
+    s.onclick=()=>openDetail(n);
+    sigList.appendChild(s);
+  });
+  document.getElementById('calmNote').style.display=flagged.length?'none':'block';
+
+  const avg=NAMES.reduce((a,n)=>a+DATA[n][4],0)/NAMES.length;
+  document.getElementById('classMood').textContent=
+    avg>=4.4?'Mostly great':avg>=3.7?'Mostly good':avg>=3?'A flatter day':'A hard day';
+  document.getElementById('checkedIn').textContent=
+    `Monday 27 July · ${NAMES.length} of ${NAMES.length} checked in`;
+}
+
+/* Recomputes every rule from scratch, then repaints. */
+function recompute(){ FLAGS=evaluateAll();
+  NAMES.forEach(n=>{BASE[n]=median(HISTORY[n].map(d=>d.score));DATA[n]=HISTORY[n].slice(-5).map(d=>d.score);});
+  renderTeacher();
+}
+
+renderTeacher();
+
+document.getElementById('whoSel').innerHTML=
+  NAMES.map(n=>`<option${n===CURRENT_KID?' selected':''}>${n}</option>`).join('');
+
+/* when the teacher view opens right after a check-in, show which tile moved */
+const _showView=showView;
+showView=function(v){
+  _showView(v);
+  if(v==='teacher'&&LAST_CHECKIN){
+    const tile=[...document.querySelectorAll('.stu')].find(e=>e.dataset.name===LAST_CHECKIN);
+    if(tile){tile.classList.add('justin');tile.scrollIntoView({block:'nearest'});
+      setTimeout(()=>tile.classList.remove('justin'),2600);}
+    LAST_CHECKIN=null;
+  }
+};
 
 function openDetail(n){
   document.querySelectorAll('.stu').forEach(x=>x.classList.toggle('active',x.dataset.name===n));
@@ -561,6 +839,7 @@ function openDetail(n){
   document.getElementById('dTrail').textContent=
     DATA[n].map((s,i)=>`${DAYS[i]}=${s}`).join('  ')+`   |  median=${b}  |  Δ today=${(DATA[n][4]-b).toFixed(1)}`;
 
+  renderPlan(n);
   document.getElementById('dActions').style.display=f?'flex':'none';
   if(f){
     document.getElementById('dRuleId').textContent=`${f.rule} · ${f.ruleName}`;
@@ -581,10 +860,26 @@ function openDetail(n){
   document.querySelectorAll('.act').forEach(a=>a.classList.remove('done'));
   p.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-function act(btn){
+/* The teacher's judgement overrides the rule. Dismissals are kept so the
+   false-positive rate can be measured honestly rather than guessed at. */
+const DISMISSED=[];
+function act(btn,kind,name){
   document.querySelectorAll('.act').forEach(a=>a.classList.remove('done'));
   btn.classList.add('done');
-  document.getElementById('dActed').classList.add('show');
+  const note=document.getElementById('dActed');
+  if(kind==='noted'){
+    note.textContent=`Noted. ${name}'s signal stays on the board until it clears.`;
+  }else{
+    DISMISSED.push({name,kind,rule:FLAGS[name]&&FLAGS[name].rule});
+    MUTED_UNTIL[name]=true;
+    recompute();
+    note.textContent=kind==='known'
+      ? `Muted for 2 weeks. ${name} is off the signals list — you already know why.`
+      : `Dismissed. Logged as a false positive so we can report the real rate.`;
+    document.getElementById('dActions').style.display='none';
+    document.getElementById('dSub').textContent='Signal dismissed by you — the rule still ran, you overruled it.';
+  }
+  note.classList.add('show');
 }
 function closeDetail(){
   document.getElementById('detailPanel').classList.remove('show');

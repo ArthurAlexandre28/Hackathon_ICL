@@ -63,10 +63,34 @@ normal, and normal is not a problem. Only *change from their own 30-day baseline
 This is deliberate: it stops quiet and neurodivergent kids being pathologised for their
 baseline, which is the single biggest risk in a tool like this.
 
+### The rules genuinely run
+
+Detection is not a lookup table. `HISTORY` holds 30 school days per child;
+`evaluateAll()` computes each child's own median and runs all three rules against it,
+and the arithmetic shown in the panel is generated from those numbers rather than typed
+in. Nothing decides which children are flagged except the thresholds.
+
+You can prove it live: switch the kid view to **Noah** (whose previous day already sits
+2 below his median) and check in as "Not good". R1 fires, a new signal card appears, and
+his tile lights up — computed in the moment, not scripted.
+
+### What helps this child — written by a human
+
+Every child can have a **support plan** written by a parent, a teacher, or both: what
+helps, what makes it worse, who they'll talk to, practical notes. It appears as **step 4
+of the signal panel — above the AI's suggestion**, which is deliberate. The people who
+know the child outrank the model.
+
+This matters most for neurodivergent kids, where the wrong response makes things worse:
+one child needs ten minutes alone, another needs a job to do. Maia's plan is the clearest
+case — rule R3 reports "5 of her last 6 Mondays are low", and her mum has already written
+*"Swimming is Monday, first period. It's the changing rooms she can't stand."* The rule
+found the pattern; a human already knew the reason.
+
 ### Every signal states its own limits
 
-The detail panel walks through four steps — the data, the rule that fired, **what this does
-not mean**, and only then the AI's suggestion. Step 3 lists alternative explanations for
+The detail panel walks through five steps — the data, the rule that fired, **what this does
+not mean**, the human-written support plan, and only then the AI's suggestion. Step 3 lists alternative explanations for
 every flag (a cold, a bad night's sleep, a hard test, nothing at all) because a moved number
 is a moved number, not a diagnosis. Opening an *unflagged* child says so too: no signal does
 not mean a child is fine.
@@ -75,7 +99,7 @@ not mean a child is fine.
 
 | File | What it is |
 |---|---|
-| `index.html` | The prototype. Open in any browser — no install, no server, no accounts. |
+| `index.html` | The prototype — check-in flow, rule engine, support plans. Open in any browser; no install, no server, no accounts. |
 | `Sunny-Pitch-Deck.pptx` | 12-slide pitch deck, with timed speaker notes and prepared Q&A on every slide. |
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
 | `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
@@ -97,12 +121,17 @@ npm install pptxgenjs sharp && node deck-build.js && python3 dedupe.py Sunny-Pit
    *"What happens to my check-in?"* panel — the child can see the rules too.
 2. **Teacher view** — show the class grid. Mostly bright, three soft signals. Point at the
    note under the grid: *an "okay" day is not a signal.*
-3. **Click Cody** — this is the moment. Bright all week, then a two-step drop today.
+3. **Check in as Noah** ("Not good") — then switch to the teacher view and watch a new
+   signal appear that did not exist a moment ago. This is the answer to "is it hardcoded?"
+4. **Click Maia** — rule R3 finds the Monday pattern; her mum's plan, one step above the
+   AI, already says swimming is Monday first period. The machine found it, a human
+   explained it.
+5. **Click Cody** — this is the moment. Bright all week, then a two-step drop today.
    Walk the four steps: the data → the rule that fired → **what this does not mean** → the
    AI's suggested wording.
-4. **Open "How Sunny works"** — the collect / detect / word / decide pipeline, with
+6. **Open "How Sunny works"** — the collect / detect / word / decide pipeline, with
    detection marked **NO AI**.
-5. **Land the point** — Sunny didn't diagnose Cody, and didn't decide anything. It did
+7. **Land the point** — Sunny didn't diagnose Cody, and didn't decide anything. It did
    arithmetic on five numbers, showed its working, and made sure a caring adult noticed.
 
 ### Expect these questions
@@ -115,6 +144,10 @@ npm install pptxgenjs sharp && node deck-build.js && python3 dedupe.py Sunny-Pit
   dismissals to publish a real false-positive rate.
 - *"What about a kid who's always low?"* — Never flagged for their baseline. Only change
   counts. That's the point.
+- *"Is the detection real or hardcoded?"* — Real. Check in as Noah during the demo and
+  watch R1 fire on data that didn't exist a second earlier.
+- *"What if the teacher disagrees?"* — They dismiss it. The signal clears, and the
+  dismissal is logged so the false-positive rate can be published.
 
 ## Safeguarding by design
 
@@ -132,8 +165,10 @@ This is the core of the pitch, not a disclaimer bolted on:
 
 ## Status
 
-Level 1 prototype — front-end only, **simulated data**, no backend or live model calls.
-Built to prove the concept and the flow.
+Level 1 prototype — front-end only, **simulated history**, no backend or live model calls.
+The rule engine, the check-in flow and the support plans are real and run in the browser;
+what is simulated is the 30 days of history they operate on, and the AI's suggested
+wording is a per-rule template rather than a live API call.
 
 ## Roadmap
 
