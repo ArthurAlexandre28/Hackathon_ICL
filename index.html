@@ -8,7 +8,9 @@
   :root{
     --bg:#f4f7fb; --card:#ffffff; --ink:#1f2a37; --muted:#64748b; --line:#e5ecf4;
     --brand:#5b8def; --brand-soft:#e8f0fe; --accent:#ffb14e;
-    --sunny:#ffcf4a; --partly:#ffd98a; --cloudy:#b9c4d4; --rainy:#7fa8d9; --stormy:#8b7fd9;
+    /* mood scale 5(great) → 1(thumbs down). Deliberately warm-to-cool, never red:
+       a low day is not a failure, and the palette should never say it is. */
+    --m5:#ffc24a; --m4:#ffd98a; --m3:#b9c4d4; --m2:#7fa8d9; --m1:#8b7fd9;
     --good:#3bb27a; --warn:#e8a13a; --alert:#e06666;
     --shadow:0 10px 30px rgba(31,42,55,.08); --radius:20px;
     --font:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
@@ -24,7 +26,7 @@
 
   .top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
   .logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.35rem}
-  .logo .sun{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe08a,var(--sunny));box-shadow:0 0 0 6px rgba(255,207,74,.18)}
+  .logo .sun{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe08a,var(--m5));box-shadow:0 0 0 6px rgba(255,207,74,.18)}
   .logo small{display:block;font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.3px}
   .topbtns{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .toggle{display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px;box-shadow:var(--shadow)}
@@ -43,12 +45,13 @@
   .kid-card{padding:34px 28px;text-align:center}
   .kid h1{font-size:1.7rem;margin-bottom:6px}
   .kid .sub{color:var(--muted);margin-bottom:26px}
-  .weather-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-  .w-btn{border:2px solid var(--line);background:var(--card);border-radius:18px;padding:16px 6px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:8px}
-  .w-btn:hover{transform:translateY(-4px);border-color:var(--brand)}
-  .w-btn .emoji{font-size:2.1rem;line-height:1}
-  .w-btn .lbl{font-size:.78rem;font-weight:700;color:var(--muted)}
-  .w-btn.sel{border-color:var(--brand);background:var(--brand-soft)}
+  .mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .m-btn{border:2px solid var(--line);background:var(--card);border-radius:18px;padding:14px 5px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:9px}
+  .m-btn:hover{transform:translateY(-4px);border-color:var(--brand)}
+  .m-btn svg{width:54px;height:54px;display:block}
+  .m-btn .lbl{font-size:.76rem;font-weight:700;color:var(--muted);line-height:1.2;text-align:center}
+  .m-btn.sel{border-color:var(--brand);background:var(--brand-soft)}
+  .m-btn.sel .lbl{color:var(--brand)}
   .why{margin-top:26px;text-align:left;display:none}
   .why.show{display:block;animation:fade .3s}
   .why h3{font-size:1.05rem;margin-bottom:12px;text-align:center}
@@ -83,12 +86,14 @@
   .students{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px}
   .stu{border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;cursor:pointer;transition:.15s;position:relative}
   .stu:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-  .stu .dot{width:34px;height:34px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+  .stu .dot{width:34px;height:34px;margin:0 auto 6px}
+  .stu .dot svg{width:34px;height:34px;display:block}
   .stu .name{font-size:.76rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .stu.flag::after{content:"";position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--alert);box-shadow:0 0 0 3px color-mix(in srgb,var(--alert) 25%,transparent)}
   .stu.active{outline:2px solid var(--brand);outline-offset:1px}
   .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px;font-size:.78rem;color:var(--muted)}
   .legend span{display:flex;align-items:center;gap:6px}
+  .legend svg{width:17px;height:17px;display:block}
   .legend i{width:14px;height:14px;border-radius:50%;display:inline-block}
   .baseline-note{margin-top:12px;font-size:.78rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
 
@@ -119,6 +124,7 @@
   .day .fill{width:28px;border-radius:8px 8px 4px 4px;transition:.3s}
   .day .dl{font-size:.7rem;color:var(--muted);margin-top:6px;font-weight:700}
   .day .de{font-size:1rem}
+  .day .de svg{margin:0 auto;display:block}
   .bl-row{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted);margin-top:6px;padding:9px 12px;background:var(--bg);border-radius:10px}
   .bl-row .swatch{width:26px;height:0;border-top:2px dashed var(--brand)}
 
@@ -196,9 +202,9 @@
   <div id="viewKid" class="view active">
     <div class="kid">
       <div class="card kid-card" id="kidMain">
-        <h1>Hi Mia! How's your weather today? ☁️</h1>
-        <div class="sub">Tap the one that feels most like you right now.</div>
-        <div class="weather-row" id="weatherRow"></div>
+        <h1>Hi Mia! How are you feeling today?</h1>
+        <div class="sub">Tap the one that looks most like you right now.</div>
+        <div class="mood-row" id="moodRow"></div>
         <div class="why" id="whyBox">
           <h3>Want to tell me why? <span style="color:var(--muted);font-weight:500">(you don't have to)</span></h3>
           <div class="chips" id="whyChips"></div>
@@ -207,16 +213,16 @@
       </div>
 
       <div class="card thanks" id="thanksBox">
-        <div class="big" id="thanksEmoji">🌈</div>
+        <div class="big" id="thanksFace"></div>
         <h2>Thanks for checking in, Mia!</h2>
-        <p id="thanksMsg">Whatever your weather, we're glad you're here today.</p>
+        <p id="thanksMsg">However you're feeling, we're glad you're here today.</p>
         <button class="again" onclick="resetKid()">Do it again</button>
       </div>
 
       <div class="card kid-see">
         <h4>🔍 What happens to my check-in?</h4>
         <ul>
-          <li>Your teacher sees the weather you picked. That's it.</li>
+          <li>Your teacher sees the face you picked. That's it.</li>
           <li>You can always pick <b>“I'd rather not say.”</b></li>
           <li>You can ask your teacher to show you your own chart, any time.</li>
           <li class="no">Nobody is told <i>why</i> you feel something unless you say so.</li>
@@ -233,23 +239,16 @@
         <h2>Room 6 · Morning check-in</h2>
         <div class="meta">Monday 27 July · 24 of 26 checked in</div>
       </div>
-      <div class="meta">Class mood today: <b id="classMood">Mostly bright 🌤️</b></div>
+      <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
     </div>
 
     <div class="grid-2">
       <div class="card class-grid">
-        <div class="section-title">Today's class weather</div>
+        <div class="section-title">Today's check-ins</div>
         <div class="students" id="students"></div>
-        <div class="legend">
-          <span><i style="background:var(--sunny)"></i>Sunny</span>
-          <span><i style="background:var(--partly)"></i>Okay</span>
-          <span><i style="background:var(--cloudy)"></i>Cloudy</span>
-          <span><i style="background:var(--rainy)"></i>Rainy</span>
-          <span><i style="background:var(--stormy)"></i>Stormy</span>
-          <span><i style="background:var(--alert)"></i>Soft signal</span>
-        </div>
+        <div class="legend" id="legend"></div>
         <div class="baseline-note">
-          ℹ️ A cloudy day is <b>not</b> a signal. Sunny only flags a <b>change from that child's
+          ℹ️ An “okay” day is <b>not</b> a signal. Sunny only flags a <b>change from that child's
           own 30-day baseline</b> — never a comparison against classmates.
         </div>
       </div>
@@ -337,7 +336,7 @@
       <h3>📥 What we collect</h3>
       <p>One tap per check-in. That is the entire dataset.</p>
       <ul class="mlist">
-        <li><b>A weather choice</b> — one of 5 values, stored as a number 1–5</li>
+        <li><b>A feeling choice</b> — one of 5 faces, stored as a number 1–5</li>
         <li><b>An optional reason tag</b> — one of 6 fixed options, including “rather not say”</li>
         <li><b>A timestamp</b> and the class ID</li>
       </ul>
@@ -368,8 +367,8 @@
         <tr><td>R2</td><td><b>Sustained drift</b> — ≥1.5 steps below their own median for 3 or more consecutive days.</td></tr>
         <tr><td>R3</td><td><b>Repeating cycle</b> — the same weekday falls ≥1.5 steps below their own median in ≥4 of the last 6 occurrences.</td></tr>
       </table>
-      <p style="margin-top:12px">Every rule compares a child <b>only to themselves</b>. A child who is
-      consistently cloudy is never flagged for being cloudy — that is their normal, and normal is not a problem.
+      <p style="margin-top:12px">Every rule compares a child <b>only to themselves</b>. A child who checks in
+      “okay” most days is never flagged for it — that is their normal, and normal is not a problem.
       This is deliberate: it protects quiet and neurodivergent kids from being pathologised for their baseline.</p>
     </div>
 
@@ -402,9 +401,44 @@
 </div>
 
 <script>
-const WEATHER=[
-  {emoji:'☀️',lbl:'Sunny',score:5},{emoji:'🌤️',lbl:'Okay',score:4},
-  {emoji:'☁️',lbl:'Cloudy',score:3},{emoji:'🌧️',lbl:'Rainy',score:2},{emoji:'⛈️',lbl:'Stormy',score:1}];
+/* ---------- the 5-point face scale ----------
+   Faces rather than a metaphor: a child shouldn't have to translate a feeling into
+   weather before answering. The bottom of the scale is a thumbs-down, not a crying
+   face — it is unmistakable to a young child, and far lower-stakes to press than
+   claiming "I am crying". Every option sits in the same circular badge so the row
+   still reads as one scale rather than four faces and a gesture. */
+const MOODS=[
+  {score:5,lbl:'Great'},
+  {score:4,lbl:'Good'},
+  {score:3,lbl:'Okay'},
+  {score:2,lbl:'Not good'},
+  {score:1,lbl:'Really bad'},
+];
+/* 5 is an open grin rather than a wider arc — at 34px a bigger curve is not
+   distinguishable from 4, but an open mouth is, instantly. */
+const GRIN='<path d="M27,52 A23,23 0 0 0 73,52 Z" fill="#3a4a5e"/>';
+const MOUTH={
+  4:'M32,57 Q50,72 68,57',   // gentle smile
+  3:'M34,63 L66,63',         // flat
+  2:'M32,70 Q50,54 68,70',   // frown
+};
+/* score 1 is a thumbs-down: a thumbs-up path rotated 180° about the centre */
+const THUMB='<g transform="rotate(180 50 50)" fill="#fff">'
+  +'<rect x="22" y="49" width="11" height="30" rx="3.2"/>'
+  +'<path d="M36.5,79 h26.5 c4.6,0 8-2.9 8.9-7.2 l3.9-17.6 c1-4.7-2-8.6-6.8-8.6 h-13.2 '
+  +'c1-3.4 1.5-6.6 1.5-9.5 0-4.6-3.1-7.6-6.8-6.3-2.5.9-2.8,4.4-3.3,8.1 -.8,5.9-3.7,11.1-9.7,14.1 z"/></g>';
+
+function faceSVG(score,size){
+  const s=size||100;
+  const eyes='<circle cx="36" cy="41" r="5.5" fill="#3a4a5e"/><circle cx="64" cy="41" r="5.5" fill="#3a4a5e"/>';
+  const face=score===1 ? THUMB
+    : score===5 ? eyes+GRIN
+    : eyes+`<path d="${MOUTH[score]}" stroke="#3a4a5e" stroke-width="6.5" stroke-linecap="round" fill="none"/>`;
+  return `<svg viewBox="0 0 100 100" width="${s}" height="${s}" role="img" aria-label="${LBL[score]}">`
+    +`<circle cx="50" cy="50" r="48" fill="var(--m${score})"/>${face}</svg>`;
+}
+const LBL={5:'Great',4:'Good',3:'Okay',2:'Not good',1:'Really bad'};
+
 const WHY=['😴 Tired','👫 Friend stuff','📚 Worried about work','🏠 Home stuff','🎉 Excited','🤐 Rather not say'];
 
 function showView(v){
@@ -419,11 +453,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHow()});
 
 /* ---------- KID ---------- */
 let picked=null,pickedWhy=null;
-const wRow=document.getElementById('weatherRow');
-WEATHER.forEach(w=>{
+const wRow=document.getElementById('moodRow');
+MOODS.forEach(m=>{
   const b=document.createElement('button');
-  b.className='w-btn';b.innerHTML=`<span class="emoji">${w.emoji}</span><span class="lbl">${w.lbl}</span>`;
-  b.onclick=()=>{picked=w;[...wRow.children].forEach(c=>c.classList.remove('sel'));b.classList.add('sel');
+  b.className='m-btn';b.innerHTML=faceSVG(m.score)+`<span class="lbl">${m.lbl}</span>`;
+  b.onclick=()=>{picked=m;[...wRow.children].forEach(c=>c.classList.remove('sel'));b.classList.add('sel');
     document.getElementById('whyBox').classList.add('show');document.getElementById('sendBtn').disabled=false;};
   wRow.appendChild(b);
 });
@@ -436,10 +470,10 @@ WHY.forEach(t=>{
 function submitCheckin(){
   document.getElementById('kidMain').style.display='none';
   document.getElementById('thanksBox').classList.add('show');
-  document.getElementById('thanksEmoji').textContent=picked.score>=4?'🌈':picked.score===3?'🤍':'🫶';
+  document.getElementById('thanksFace').innerHTML=faceSVG(picked.score,78);
   document.getElementById('thanksMsg').textContent=picked.score<=2
     ?"Thanks for being honest, Mia. Your teacher knows, and that's a brave thing to share."
-    :"Whatever your weather, we're glad you're here today.";
+    :"However you're feeling, we're glad you're here today.";
 }
 function resetKid(){
   picked=pickedWhy=null;
@@ -468,7 +502,7 @@ const FLAGS={
     calc:"Cody's 30-day median = 4.2\nThu = 2 → 2.2 steps below\nFri = 1 → 3.2 steps below\n2 consecutive days ≥2.0 below → RULE FIRED",
     short:"Two consecutive days ≥2 steps below his own 30-day median.",
     notMean:"Sunny has detected that a number Cody chose has moved. It has not detected sadness, and it has no idea what is going on in his life.",
-    alts:"a cold or a bad night's sleep · a fight at lunchtime · a hard test · something at home · a joke with a friend about picking storms · nothing at all",
+    alts:"a cold or a bad night's sleep · a fight at lunchtime · a hard test · something at home · a joke with a friend about picking the thumbs-down · nothing at all",
     next:"Worth a quiet word today — open, not probing. If it's still low tomorrow, that's the point to loop in your wellbeing lead."},
   'Aroha':{level:'watch',rule:'R2',ruleName:'Sustained drift',
     ruleText:"Fires when a child sits ≥1.5 steps below their OWN 30-day median for 3 or more consecutive days.",
@@ -486,18 +520,21 @@ const FLAGS={
     next:"Look at what Monday mornings actually involve before speaking to her — the answer may be in the timetable, and fixable without a conversation at all."}
 };
 
-const sColor=s=>['','var(--stormy)','var(--rainy)','var(--cloudy)','var(--partly)','var(--sunny)'][s];
-const sEmoji=s=>['','⛈️','🌧️','☁️','🌤️','☀️'][s];
+const sColor=s=>`var(--m${s})`;
 const DAYS=['Mon','Tue','Wed','Thu','Fri'];
 
 const stuWrap=document.getElementById('students');
 NAMES.forEach(n=>{
   const d=document.createElement('div');
   d.className='stu'+(FLAGS[n]?' flag':'');d.dataset.name=n;
-  d.innerHTML=`<div class="dot" style="background:${sColor(DATA[n][4])}">${sEmoji(DATA[n][4])}</div><div class="name">${n}</div>`;
+  d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${n}</div>`;
   d.onclick=()=>openDetail(n);
   stuWrap.appendChild(d);
 });
+
+document.getElementById('legend').innerHTML=
+  MOODS.map(m=>`<span>${faceSVG(m.score,17)}${m.lbl}</span>`).join('')
+  +'<span><i style="background:var(--alert)"></i>Soft signal</span>';
 
 const sigList=document.getElementById('signalList');
 ['Cody','Aroha','Maia'].forEach(n=>{
@@ -519,7 +556,7 @@ function openDetail(n){
     :'No signal — shown for transparency. Any child can be opened at any time.';
 
   document.getElementById('weekChart').innerHTML=DATA[n].map((s,i)=>
-    `<div class="day"><div class="de">${sEmoji(s)}</div><div class="bar"><div class="fill" style="height:${s*13}px;background:${sColor(s)}"></div></div><div class="dl">${DAYS[i]}</div></div>`).join('');
+    `<div class="day"><div class="de">${faceSVG(s,22)}</div><div class="bar"><div class="fill" style="height:${s*13}px;background:${sColor(s)}"></div></div><div class="dl">${DAYS[i]}</div></div>`).join('');
   document.getElementById('dBaseline').innerHTML=`<b>${n}'s own 30-day baseline: ${b}</b> — every rule below measures distance from this line, not from the class.`;
   document.getElementById('dTrail').textContent=
     DATA[n].map((s,i)=>`${DAYS[i]}=${s}`).join('  ')+`   |  median=${b}  |  Δ today=${(DATA[n][4]-b).toFixed(1)}`;
@@ -536,7 +573,7 @@ function openDetail(n){
     document.getElementById('dRuleId').textContent='No rule fired';
     document.getElementById('dRuleText').textContent=`All three rules were evaluated against ${n}'s own baseline and none triggered.`;
     document.getElementById('dRuleCalc').innerHTML='R1 sudden change &nbsp;→ not met<br>R2 sustained drift &nbsp;→ not met<br>R3 repeating cycle → not met';
-    document.getElementById('dNotMean').textContent=`No signal does not mean ${n} is fine. A child can be struggling and still tap “sunny” every day. Sunny is one small input, never a substitute for knowing your class.`;
+    document.getElementById('dNotMean').textContent=`No signal does not mean ${n} is fine. A child can be struggling and still tap “great” every day. Sunny is one small input, never a substitute for knowing your class.`;
     document.getElementById('dAlts').textContent='masking · not trusting the app · having a genuinely good week';
     document.getElementById('dNext').textContent='Nothing suggested. Sunny stays quiet unless a rule fires.';
   }

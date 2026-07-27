@@ -1,4 +1,5 @@
 const pptxgen = require("pptxgenjs");
+const { faces } = require("./faces");
 const p = new pptxgen();
 p.layout = "LAYOUT_WIDE";               // 13.3 x 7.5
 const W = 13.3, H = 7.5;
@@ -6,7 +7,8 @@ const W = 13.3, H = 7.5;
 /* ---------- palette: night sky + sun ---------- */
 const NIGHT = "1B2A4A", DEEP = "21304F", LIGHT = "F4F7FB", WHITE = "FFFFFF";
 const GOLD  = "FFC24A", SKY  = "5B8DEF", MUTED = "6B7B92", INK = "1F2A37";
-const SUNNY = "FFCF4A", OKAY = "FFD98A", CLOUD = "B9C4D4", RAIN = "7FA8D9", STORM = "8B7FD9";
+/* mood scale 5(great) → 1(thumbs down); matches index.html exactly */
+const M5 = "FFC24A", M4 = "FFD98A", M3 = "B9C4D4", M2 = "7FA8D9", M1 = "8B7FD9";
 const ALERT = "E06666", GOOD = "3BB27A", SOFTBG = "E8F0FE";
 
 const HEAD = "Cambria", BODY = "Calibri";
@@ -34,6 +36,10 @@ function foot(s, txt, dark) {
     color: dark ? "6B84AB" : MUTED, margin: 0 });
 }
 
+let FACE;
+async function main(){
+FACE = await faces();
+
 /* ================= 1 · TITLE ================= */
 {
   const s = p.addSlide();
@@ -48,12 +54,11 @@ function foot(s, txt, dark) {
   s.addText("The quiet kid gets noticed —\nwithout a machine guessing how they feel.",
     { x: 0.95, y: 3.75, w: 7.6, h: 1.1, fontFace: BODY, fontSize: 16, color: "9FB3D0", lineSpacing: 26, margin: 0 });
 
-  // weather scale strip = the product in one glance
-  const cols = [SUNNY, OKAY, CLOUD, RAIN, STORM];
-  cols.forEach((c, i) => s.addShape(p.ShapeType.ellipse,
-    { x: 0.95 + i * 0.62, y: 5.35, w: 0.44, h: 0.44, fill: { color: c }, line: { type: "none" } }));
+  // the actual scale = the product in one glance
+  [5, 4, 3, 2, 1].forEach((sc, i) =>
+    s.addImage({ data: FACE[sc], x: 0.95 + i * 0.62, y: 5.3, w: 0.5, h: 0.5 }));
   s.addText("five taps · twenty seconds · once a day",
-    { x: 4.25, y: 5.35, w: 5, h: 0.44, fontFace: BODY, fontSize: 12, color: "6B84AB", valign: "middle", margin: 0 });
+    { x: 4.35, y: 5.3, w: 5, h: 0.5, fontFace: BODY, fontSize: 12, color: "6B84AB", valign: "middle", margin: 0 });
 
   foot(s, "ICL Hackathon 2026  ·  Sustainable Business Innovation & AI Challenge  ·  Education Technology", true);
   s.addNotes(`[0:00-0:15] Open on the title. Say it slowly.
@@ -70,9 +75,9 @@ Don't read the slide. Let the sun sit there.`);
   titleSlide(s, "26 students. One teacher. Six hours.", "A teacher cannot read 26 inner states at once — and the children who most need noticing are the hardest to see.");
 
   const items = [
-    ["Masking", "Kids who have learned to perform “fine” because it is easier than explaining.", CLOUD],
-    ["No words yet", "Neurodivergent kids who feel it clearly but cannot name it on demand.", RAIN],
-    ["Won't say it aloud", "Kids who would never raise a hand in front of 25 classmates.", STORM],
+    ["Masking", "Kids who have learned to perform “fine” because it is easier than explaining.", M3],
+    ["No words yet", "Neurodivergent kids who feel it clearly but cannot name it on demand.", M2],
+    ["Won't say it aloud", "Kids who would never raise a hand in front of 25 classmates.", M1],
   ];
   items.forEach(([h, d, c], i) => {
     const x = 0.75 + i * 4.03;
@@ -105,12 +110,11 @@ Arthur — this is where your Skill Samurai experience earns credibility. One se
   card(s, 0.75, 2.15, 5.75, 3.75, LIGHT, "E2EAF4");
   orb(s, 1.15, 2.55, 0.55, GOLD, "1", DEEP, 18);
   s.addText("The child", { x: 1.88, y: 2.6, w: 4, h: 0.42, fontFace: HEAD, fontSize: 21, bold: true, color: INK, margin: 0 });
-  s.addText("“How's your weather today?”", { x: 1.15, y: 3.2, w: 5, h: 0.35, fontFace: BODY, fontSize: 14, italic: true, color: SKY, margin: 0 });
-  const cols = [SUNNY, OKAY, CLOUD, RAIN, STORM];
-  cols.forEach((c, i) => s.addShape(p.ShapeType.ellipse,
-    { x: 1.15 + i * 0.78, y: 3.72, w: 0.58, h: 0.58, fill: { color: c }, line: { type: "none" }, shadow: shadow() }));
+  s.addText("“How are you feeling today?”", { x: 1.15, y: 3.2, w: 5, h: 0.35, fontFace: BODY, fontSize: 14, italic: true, color: SKY, margin: 0 });
+  [5, 4, 3, 2, 1].forEach((sc, i) =>
+    s.addImage({ data: FACE[sc], x: 1.15 + i * 0.78, y: 3.72, w: 0.62, h: 0.62 }));
   s.addText([
-    { text: "Weather, not words — no vocabulary needed", options: { bullet: true, breakLine: true } },
+    { text: "Faces, not words — no vocabulary needed", options: { bullet: true, breakLine: true } },
     { text: "Optional reason tag, including “rather not say”", options: { bullet: true, breakLine: true } },
     { text: "The child can see their own history any time", options: { bullet: true } },
   ], { x: 1.15, y: 4.55, w: 5, h: 1.2, fontFace: BODY, fontSize: 12.5, color: MUTED, paraSpaceAfter: 5, margin: 0 });
@@ -121,10 +125,10 @@ Arthur — this is where your Skill Samurai experience earns credibility. One se
   s.addText("The teacher", { x: 7.93, y: 2.6, w: 4, h: 0.42, fontFace: HEAD, fontSize: 21, bold: true, color: INK, margin: 0 });
   s.addText("Class at a glance, plus soft signals", { x: 7.2, y: 3.2, w: 5, h: 0.35, fontFace: BODY, fontSize: 14, italic: true, color: SKY, margin: 0 });
   // mini class grid
-  const grid = [SUNNY, SUNNY, RAIN, SUNNY, OKAY, SUNNY, SUNNY, OKAY, SUNNY, STORM, RAIN, SUNNY];
-  grid.forEach((c, i) => {
+  const grid = [5, 5, 2, 5, 4, 5, 5, 4, 5, 1, 2, 5];
+  grid.forEach((sc, i) => {
     const gx = 7.2 + (i % 6) * 0.42, gy = 3.72 + Math.floor(i / 6) * 0.42;
-    s.addShape(p.ShapeType.ellipse, { x: gx, y: gy, w: 0.32, h: 0.32, fill: { color: c }, line: { type: "none" } });
+    s.addImage({ data: FACE[sc], x: gx, y: gy, w: 0.34, h: 0.34 });
   });
   s.addText([
     { text: "Soft signals, never red alarms", options: { bullet: true, breakLine: true } },
@@ -134,7 +138,7 @@ Arthur — this is where your Skill Samurai experience earns credibility. One se
   foot(s, "The solution");
   s.addNotes(`[0:40-1:05] The solution. Move fast here.
 
-"The child taps their weather. Five options, twenty seconds, once a day. No vocabulary needed — that matters enormously for neurodivergent kids."
+"The child taps a face. Five options, twenty seconds, once a day. No vocabulary needed — and no metaphor to decode first, which matters enormously for neurodivergent kids."
 
 "The teacher gets the class at a glance, plus soft signals. Never red alarms."
 
@@ -149,7 +153,7 @@ Point at 'the child can see their own history' — it pre-empts the surveillance
 
   card(s, 0.75, 2.2, 7.1, 3.75, WHITE, "E2EAF4");
   const week = [
-    ["Mon", 4, OKAY], ["Tue", 4, OKAY], ["Wed", 4, OKAY], ["Thu", 2, RAIN], ["Fri", 1, STORM],
+    ["Mon", 4, M4], ["Tue", 4, M4], ["Wed", 4, M4], ["Thu", 2, M2], ["Fri", 1, M1],
   ];
   const baseY = 5.25, unit = 0.52;
   week.forEach(([d, v, c], i) => {
@@ -242,7 +246,7 @@ This is the slide that answers the judge's feedback head-on. Own it rather than 
     s.addText(tag, { x: x + 0.3, y: 4.92, w: 2.2, h: 0.3, fontFace: BODY, fontSize: 11, bold: true,
       color: isAI ? "A6761D" : GOOD, margin: 0 });
     if (i < 3) s.addText("›", { x: x + 2.78, y: 3.5, w: 0.25, h: 0.4, align: "center",
-      fontFace: BODY, fontSize: 22, color: CLOUD, margin: 0 });
+      fontFace: BODY, fontSize: 22, color: M3, margin: 0 });
   });
 
   card(s, 0.75, 5.65, 11.8, 0.85, DEEP);
@@ -296,22 +300,22 @@ Don't read all three aloud. Gesture at them and move.`);
 {
   const s = p.addSlide();
   s.background = { color: WHITE };
-  titleSlide(s, "A cloudy day is not a signal", "Only change from a child's own normal counts. This is the whole design.");
+  titleSlide(s, "An “okay” day is not a signal", "Only change from a child's own normal counts. This is the whole design.");
 
   card(s, 0.75, 2.25, 5.75, 3.3, LIGHT, "E2EAF4");
-  s.addText("Ana checks in “cloudy” most days", { x: 1.15, y: 2.62, w: 5, h: 0.4, fontFace: HEAD, fontSize: 19, bold: true, color: INK, margin: 0 });
-  [CLOUD, CLOUD, RAIN, CLOUD, CLOUD].forEach((c, i) =>
-    s.addShape(p.ShapeType.ellipse, { x: 1.15 + i * 0.72, y: 3.2, w: 0.52, h: 0.52, fill: { color: c }, line: { type: "none" } }));
+  s.addText("Ana checks in “okay” most days", { x: 1.15, y: 2.62, w: 5, h: 0.4, fontFace: HEAD, fontSize: 19, bold: true, color: INK, margin: 0 });
+  [3, 3, 2, 3, 3].forEach((sc, i) =>
+    s.addImage({ data: FACE[sc], x: 1.15 + i * 0.72, y: 3.2, w: 0.56, h: 0.56 }));
   s.addText("Never flagged.", { x: 1.15, y: 4.0, w: 5, h: 0.4, fontFace: HEAD, fontSize: 20, bold: true, color: GOOD, margin: 0 });
   s.addText("That is her normal, and normal is not a problem. Sunny has nothing to say about Ana, and says nothing.",
     { x: 1.15, y: 4.45, w: 5, h: 0.85, fontFace: BODY, fontSize: 13, color: MUTED, lineSpacing: 19, margin: 0 });
 
   card(s, 6.8, 2.25, 5.75, 3.3, LIGHT, "E2EAF4");
-  s.addText("Ben checks in “sunny” most days", { x: 7.2, y: 2.62, w: 5, h: 0.4, fontFace: HEAD, fontSize: 19, bold: true, color: INK, margin: 0 });
-  [SUNNY, SUNNY, SUNNY, RAIN, RAIN].forEach((c, i) =>
-    s.addShape(p.ShapeType.ellipse, { x: 7.2 + i * 0.72, y: 3.2, w: 0.52, h: 0.52, fill: { color: c }, line: { type: "none" } }));
+  s.addText("Ben checks in “great” most days", { x: 7.2, y: 2.62, w: 5, h: 0.4, fontFace: HEAD, fontSize: 19, bold: true, color: INK, margin: 0 });
+  [5, 5, 5, 2, 2].forEach((sc, i) =>
+    s.addImage({ data: FACE[sc], x: 7.2 + i * 0.72, y: 3.2, w: 0.56, h: 0.56 }));
   s.addText("Flagged.", { x: 7.2, y: 4.0, w: 5, h: 0.4, fontFace: HEAD, fontSize: 20, bold: true, color: ALERT, margin: 0 });
-  s.addText("Same two “rainy” days as Ana — but for Ben they are a departure. Change is the signal, not the level.",
+  s.addText("Same two “not good” days as Ana — but for Ben they are a departure. Change is the signal, not the level.",
     { x: 7.2, y: 4.45, w: 5, h: 0.85, fontFace: BODY, fontSize: 13, color: MUTED, lineSpacing: 19, margin: 0 });
 
   card(s, 0.75, 5.78, 11.8, 0.95, SOFTBG, GOLD);
@@ -320,9 +324,9 @@ Don't read all three aloud. Gesture at them and move.`);
   foot(s, "Inclusion by design");
   s.addNotes(`[2:30-2:45] Inclusion. This is the slide that wins the EdTech track.
 
-"Ana is cloudy most days. She is never flagged — that's her normal, and normal is not a problem."
+"Ana checks in okay most days. She is never flagged — that's her normal, and normal is not a problem."
 
-"Ben is sunny most days. The same two rainy days get flagged, because for Ben they're a departure."
+"Ben checks in great most days. The same two not-good days get flagged, because for Ben they're a departure."
 
 "Change is the signal, not the level. That protects quiet and neurodivergent kids from being flagged for simply being themselves."
 
@@ -445,9 +449,8 @@ Keep pricing vague unless asked. If pressed, say it's indicative and depends on 
   s.addText("That is the only kind of AI a school should ever point at a child.",
     { x: 0.95, y: 5.15, w: 9.2, h: 0.45, fontFace: BODY, fontSize: 16, color: "9FB3D0", margin: 0 });
 
-  const cols = [SUNNY, OKAY, CLOUD, RAIN, STORM];
-  cols.forEach((c, i) => s.addShape(p.ShapeType.ellipse,
-    { x: 0.95 + i * 0.62, y: 5.95, w: 0.44, h: 0.44, fill: { color: c }, line: { type: "none" } }));
+  [5, 4, 3, 2, 1].forEach((sc, i) =>
+    s.addImage({ data: FACE[sc], x: 0.95 + i * 0.62, y: 5.9, w: 0.5, h: 0.5 }));
   foot(s, "Sunny  ·  Classroom Mood Check-in  ·  ICL Hackathon 2026", true);
   s.addNotes(`[3:15-3:30] Close. Stop talking after this. Do not add anything.
 
@@ -476,4 +479,7 @@ Q: Privacy / parents?
 A: One tap, no free text, deleted after 30 days, never trains a model, never auto-notifies anyone.`);
 }
 
-p.writeFile({ fileName: "Sunny-Pitch-Deck.pptx" }).then(f => console.log("wrote", f));
+await p.writeFile({ fileName: "Sunny-Pitch-Deck.pptx" });
+console.log("wrote Sunny-Pitch-Deck.pptx");
+}
+main().catch(e => { console.error(e); process.exit(1); });

@@ -13,13 +13,29 @@ cannot read 26 inner states at once.
 
 ## The solution
 
-- **Kids** tap their "weather" (☀️ → ⛈️) instead of naming an emotion. Optional one-tap
+- **Kids** tap a face (Great → Really bad) instead of naming an emotion. Optional one-tap
   "why", including *"I'd rather not say."*
 - **Teachers** get an at-a-glance class grid plus **soft signals** — not alarms.
 - **Three transparent rules** spot patterns over time that a human scanning a grid would miss:
   - a sudden drop from a child's *own* normal (Cody — R1)
   - a slow downward drift over several days (Aroha — R2)
   - a repeating weekly cycle (Maia — every Monday — R3)
+
+### Why faces, and why a thumbs-down at the bottom
+
+The scale was originally a weather metaphor (sunny → stormy). Judge feedback was that a
+child shouldn't have to translate a feeling into weather before they can answer — the
+metaphor adds a step between the question and the child. Faces remove it.
+
+The bottom of the scale is a **thumbs-down rather than a crying face**, on the same
+reasoning: a crying face is a big thing for a child to claim about themselves and is easy to
+avoid pressing, while a thumbs-down is unmistakable and low-stakes. A thumbs-down is a
+gesture rather than a face, so every option sits in the same circular badge — the row still
+reads as one scale, not four faces and a hand.
+
+The faces are inline SVG, not emoji, so they render identically on every school device
+rather than shifting with the platform's emoji font. The palette runs warm-to-cool and
+never uses red: a low day is not a failure, and the colours should never imply it is.
 
 ## How the analysis works — and why that matters
 
@@ -42,7 +58,7 @@ reproducible and auditable; a parent could check the maths by hand.
 
 ### Every rule compares a child only to themselves
 
-A child who is consistently cloudy is never flagged for being cloudy — that is their
+A child who checks in "okay" most days is never flagged for it — that is their
 normal, and normal is not a problem. Only *change from their own 30-day baseline* counts.
 This is deliberate: it stops quiet and neurodivergent kids being pathologised for their
 baseline, which is the single biggest risk in a tool like this.
@@ -62,6 +78,8 @@ not mean a child is fine.
 | `index.html` | The prototype. Open in any browser — no install, no server, no accounts. |
 | `Sunny-Pitch-Deck.pptx` | 12-slide pitch deck, with timed speaker notes and prepared Q&A on every slide. |
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
+| `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
+| `dedupe.py` | Post-build step: pptxgenjs writes one media part per image *use*, so this collapses them (889K → 367K). |
 
 ```bash
 open index.html
@@ -70,15 +88,15 @@ open index.html
 To regenerate the deck after editing `deck-build.js`:
 
 ```bash
-npm install pptxgenjs && node deck-build.js
+npm install pptxgenjs sharp && node deck-build.js && python3 dedupe.py Sunny-Pitch-Deck.pptx Sunny-Pitch-Deck.pptx
 ```
 
 ## Demo script (3 minutes)
 
-1. **Kid view** — tap "Rainy", tap a reason, send. Note the warm response and the
+1. **Kid view** — tap "Not good", tap a reason, send. Note the warm response and the
    *"What happens to my check-in?"* panel — the child can see the rules too.
 2. **Teacher view** — show the class grid. Mostly bright, three soft signals. Point at the
-   note under the grid: *a cloudy day is not a signal.*
+   note under the grid: *an "okay" day is not a signal.*
 3. **Click Cody** — this is the moment. Bright all week, then a two-step drop today.
    Walk the four steps: the data → the rule that fired → **what this does not mean** → the
    AI's suggested wording.
