@@ -2,7 +2,8 @@
 
 **ICL Hackathon 2026 · Education Technology track**
 
-A 20-second visual emotional check-in for primary school kids (ages ~8–12), with a calm,
+A 20-second visual emotional check-in for primary school kids (**ages 8–11, NZ Years
+4–6** — see [TARGET-USER-AND-EVIDENCE.md](TARGET-USER-AND-EVIDENCE.md)), with a calm,
 private pattern dashboard for the teacher.
 
 ## The problem
