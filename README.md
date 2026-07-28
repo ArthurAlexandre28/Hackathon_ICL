@@ -39,6 +39,25 @@ Its guidance is to distrust that child's recent scores until it settles. The pro
 whole claim is that it will not read meaning into a number it cannot stand behind — this
 is the same principle turned on our own input.
 
+### Known limitation — a chronically severe baseline is invisible
+
+Every rule compares a child **only to their own baseline**, which is the design that
+protects a naturally quiet or "okay" kid from being flagged for being themselves. That same
+logic has a blind spot: a child whose baseline genuinely *is* rock-bottom — a median of 1–2
+sustained for 30 days — never deviates from their own normal, so no rule ever fires for
+them. The system built to stop quiet kids being pathologised can, as a side effect, stop
+itself from ever noticing a child whose normal is chronic distress. That is arguably the
+highest-stakes miss in the current design, and we'd rather name it than let a judge find it.
+
+The fix is not "flag any single bad tap" — one rough day happens to everyone, and flagging
+on it would cause exactly the alert fatigue this design exists to avoid (it's why R1 needs
+two consecutive days, not one). The right fix is a rule that looks at the baseline itself
+rather than deviation from it: **R6 — sustained severe baseline**, firing when a child's own
+30-day median sits at or near the bottom of the scale, regardless of trend. Not built yet —
+deliberately left as a roadmap item rather than rushed in before a deadline, so that adding
+it gets the same scrutiny (new seed data, a full regression pass, an updated rules count on
+every slide) as every other rule did.
+
 ### Context from home, and from classmates
 
 Two more human channels, both sitting above the AI's suggestion:
@@ -269,15 +288,21 @@ This is the core of the pitch, not a disclaimer bolted on:
 
 ## Status
 
-Level 1 prototype — front-end only, **simulated history**, no backend or live model calls.
-The rule engine, the check-in flow, the support plans and the escalation trail are real
-and run in the browser; the sign-in is role separation, not security;
-what is simulated is the 30 days of history they operate on, and the AI's suggested
-wording is a per-rule template rather than a live API call.
+Level 1 prototype — front-end only, **simulated history**. The rule engine, the check-in
+flow, the support plans and the escalation trail are real and run in the browser; the
+sign-in is role separation, not security. What is simulated is the 30 days of history the
+rules operate on. The AI's suggested wording (step 5 of the signal panel) is a **live
+model call when `ANTHROPIC_API_KEY` is set**, and falls back to a per-rule written template
+otherwise — every failure path (no key, no network, a timeout, a refusal) degrades to the
+template silently, so the panel can never end up empty. See `AI-TOOLS-DECLARATION.md` for
+exactly what is and isn't sent to the model.
 
 ## Roadmap
 
-- **Level 2 (MVP):** real check-in storage, live Claude API pattern analysis, teacher login.
+- **R6 — sustained severe baseline.** See "Known limitation" above: the current rules are
+  blind to a child whose baseline itself is chronically low. Highest-priority addition.
+- **Level 2 (MVP):** real check-in storage, teacher login, `.env`-based deployment for the
+  live wording call.
 - **Level 3 (Product):** student accounts, privacy/safeguarding compliance, school data
   agreements, real escalation routing to counsellors.
 

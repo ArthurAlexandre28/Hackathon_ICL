@@ -14,7 +14,8 @@ start. Every AI tool, library, dataset and third-party resource used is listed b
 
 | Tool | Version | What it was used for |
 |---|---|---|
-| **Claude** (Anthropic), via Claude Code | Opus 4.8 | Development partner across the whole project: writing and reviewing the application code, the demo server, the deck generator and the written submission items; design critique of the check-in scale and dashboard; testing and debugging. |
+| **Claude** (Anthropic), via Claude Code | Opus 4.8 / Opus 5 | Development partner across the whole project: writing and reviewing the application code, the demo server, the deck generator and the written submission items; design critique of the check-in scale and dashboard; testing and debugging. |
+| **Claude** (Anthropic), via the Claude API | `claude-opus-5` | Runtime use, optional: generates the teacher-facing wording for a fired rule. See §2. |
 
 **How we used it.** Claude was used conversationally — we set the direction, made the
 product and design decisions, and acted on judge feedback; Claude implemented, tested and
@@ -34,17 +35,23 @@ classmate's mood.
 We are declaring this explicitly because the distinction is the core of our design, and
 we do not want to overstate what the prototype does.
 
-**The prototype makes no live model API calls at runtime.**
+**Detection makes no model calls. Wording optionally does.**
 
-- **Detection is deterministic arithmetic.** Four fixed rules compare each child's
+- **Detection is deterministic arithmetic.** Five fixed rules compare each child's
   check-in to their own 30-day median. This is plain maths, runs in the browser, and is
-  fully auditable. No model is involved in deciding which child is flagged.
-- **The "suggested next step" shown to teachers is a per-rule written template**, not
-  live generative output. In the product design this step is where a model would be
-  used — it receives only a rule name and five numbers — but in this prototype the
-  wording is pre-written by us. The interface labels this step "AI"; that reflects the
-  intended architecture, and this declaration is where we make the current
-  implementation clear.
+  fully auditable. No model is involved in deciding which child is flagged, and none of
+  this changes when the item below is switched on.
+- **The "suggested next step" shown to teachers can be a live Claude call.** When an
+  `ANTHROPIC_API_KEY` is set on the machine running the demo server, that one step —
+  and only that step — sends a request to Claude (`claude-opus-5`) consisting of a rule
+  name, its threshold, the child's own 30-day median, and their last five check-in
+  scores. No child's name, no free-text reason, no history beyond those five numbers.
+  The model returns one or two sentences of suggested wording for the teacher; it never
+  sees, and cannot influence, which child was flagged. Without a key set — including the
+  version graders receive if they run it themselves without configuring one — this step
+  falls back to a pre-written template per rule, and every failure path (no key, no
+  network, a timeout, a policy refusal) degrades to that same template silently, so the
+  panel can never render empty.
 
 Generative AI was therefore used **to build** this project, extensively, rather than
 being called by the finished prototype.
