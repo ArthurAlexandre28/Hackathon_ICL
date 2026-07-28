@@ -84,6 +84,17 @@
   .kid-see li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:800}
   .kid-see li.no::before{content:"✕";color:var(--alert)}
 
+  /* the child's own view of their own data — no rules, no flags, no judgement */
+  .mine{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg)}
+  .mine h5{font-size:.92rem;margin-bottom:3px}
+  .mine .sub2{font-size:.8rem;color:var(--muted);margin-bottom:14px}
+  .mine .days{display:flex;gap:7px;flex-wrap:wrap}
+  .mine .d{text-align:center;flex:1;min-width:44px}
+  .mine .d svg{width:30px;height:30px;margin:0 auto;display:block}
+  .mine .d span{display:block;font-size:.62rem;color:var(--muted);font-weight:700;margin-top:5px}
+  .mine .msg{margin-top:14px;font-size:.85rem;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:10px;padding:11px 13px;line-height:1.5}
+
   /* ---------- TEACHER VIEW ---------- */
   .t-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:18px}
   .t-head h2{font-size:1.45rem}
@@ -131,6 +142,7 @@
   .day .bar{height:70px;display:flex;align-items:flex-end;justify-content:center;position:relative}
   .day .fill{width:28px;border-radius:8px 8px 4px 4px;transition:.3s}
   .day .dl{font-size:.7rem;color:var(--muted);margin-top:6px;font-weight:700}
+  .day .nofill{font-size:.6rem;color:var(--muted);align-self:center;text-align:center;line-height:1.2;opacity:.75}
   .day .de{font-size:1rem}
   .day .de svg{margin:0 auto;display:block}
   .bl-row{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted);margin-top:6px;padding:9px 12px;background:var(--bg);border-radius:10px}
@@ -181,6 +193,35 @@
   .acted{font-size:.82rem;color:var(--good);font-weight:700;margin-top:10px;display:none}
   .acted.show{display:block}
 
+  .escalate-any{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .escalate-any span{font-size:.78rem;color:var(--muted);flex:1;min-width:220px}
+  .act.esc{border-color:var(--alert);color:var(--alert)}
+  .act.esc:hover{background:color-mix(in srgb,var(--alert) 10%,transparent);color:var(--alert)}
+  .esc-panel{margin-top:14px;border:1px solid var(--alert);border-radius:14px;padding:16px;
+    background:color-mix(in srgb,var(--alert) 5%,transparent)}
+  .esc-panel h4{font-size:.95rem;margin-bottom:4px}
+  .esc-panel .lead{font-size:.82rem;color:var(--muted);margin-bottom:14px}
+  .esc-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.esc-cols{grid-template-columns:1fr}}
+  .esc-col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px}
+  .esc-col h5{font-size:.72rem;letter-spacing:.6px;text-transform:uppercase;margin-bottom:9px}
+  .esc-col.send h5{color:var(--good)}
+  .esc-col.hold h5{color:var(--alert)}
+  .esc-col ul{list-style:none;font-size:.82rem;color:var(--ink)}
+  .esc-col li{padding:4px 0 4px 20px;position:relative;line-height:1.45}
+  .esc-col.send li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:800}
+  .esc-col.hold li::before{content:"✕";position:absolute;left:0;color:var(--alert);font-weight:800}
+  .esc-col .pkg{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:8px;
+    border-top:1px dashed var(--line);padding-top:8px;white-space:pre-wrap;line-height:1.5}
+  .esc-note{margin-top:13px}
+  .esc-note label{display:block;font-size:.78rem;font-weight:800;margin-bottom:5px}
+  .esc-note textarea{width:100%;font-family:inherit;font-size:.87rem;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-height:56px;resize:vertical}
+  .esc-done{margin-top:14px;border:1px solid var(--good);background:color-mix(in srgb,var(--good) 8%,transparent);
+    border-radius:12px;padding:14px;font-size:.87rem}
+  .esc-done b{color:var(--good)}
+  .esc-done .trail{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:9px;white-space:pre-wrap}
   .disclaimer{margin-top:22px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:.82rem;color:var(--muted);display:flex;gap:10px;align-items:flex-start}
 
   /* ---------- MODAL ---------- */
@@ -253,10 +294,12 @@
         <ul>
           <li>Your teacher sees the face you picked. That's it.</li>
           <li>You can always pick <b>“I'd rather not say.”</b></li>
-          <li>You can ask your teacher to show you your own chart, any time.</li>
+          <li>You can look at your own check-ins whenever you want.</li>
           <li class="no">Nobody is told <i>why</i> you feel something unless you say so.</li>
           <li class="no">Your check-ins are never compared to your classmates'.</li>
         </ul>
+        <button class="act" style="margin-top:14px" onclick="showMine()">See my check-ins</button>
+        <div id="mineBox"></div>
       </div>
     </div>
   </div>
@@ -345,6 +388,12 @@
             <button class="act" onclick="act(this,'known',document.getElementById('dName').textContent)">I know why — mute 2 weeks</button>
             <button class="act" onclick="act(this,'wrong',document.getElementById('dName').textContent)">Not concerning — dismiss</button>
           </div>
+          <div class="escalate-any">
+            <button class="act esc" onclick="escalate(document.getElementById('dName').textContent)">↑ Raise to wellbeing lead</button>
+            <span>A teacher never needs a rule's permission to raise a concern.
+              This works whether or not anything fired.</span>
+          </div>
+          <div id="escBox"></div>
           <div class="acted" id="dActed">Recorded. The teacher's judgement always overrides the rule.</div>
         </div>
       </div>
@@ -463,7 +512,16 @@ const THUMB='<g transform="rotate(180 50 50)" fill="#fff">'
   +'<path d="M36.5,79 h26.5 c4.6,0 8-2.9 8.9-7.2 l3.9-17.6 c1-4.7-2-8.6-6.8-8.6 h-13.2 '
   +'c1-3.4 1.5-6.6 1.5-9.5 0-4.6-3.1-7.6-6.8-6.3-2.5.9-2.8,4.4-3.3,8.1 -.8,5.9-3.7,11.1-9.7,14.1 z"/></g>';
 
+/* a child who has not checked in: deliberately hollow, never a sad face —
+   we do not know how they feel, and the tile must not imply that we do */
+function noFaceSVG(size){
+  const sz=size||100;
+  return `<svg viewBox="0 0 100 100" width="${sz}" height="${sz}" role="img" aria-label="No check-in">`
+    +`<circle cx="50" cy="50" r="45" fill="none" stroke="var(--line)" stroke-width="6" stroke-dasharray="9 8"/>`
+    +`<line x1="36" y1="50" x2="64" y2="50" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/></svg>`;
+}
 function faceSVG(score,size){
+  if(score==null) return noFaceSVG(size);
   const s=size||100;
   const eyes='<circle cx="36" cy="41" r="5.5" fill="#3a4a5e"/><circle cx="64" cy="41" r="5.5" fill="#3a4a5e"/>';
   const face=score===1 ? THUMB
@@ -530,6 +588,7 @@ function submitCheckin(){
 function switchKid(){
   CURRENT_KID=document.getElementById('whoSel').value;
   document.getElementById('kidName').textContent=CURRENT_KID;
+  document.getElementById('mineBox').innerHTML='';
   resetKid();
 }
 function resetKid(){
@@ -542,6 +601,37 @@ function resetKid(){
   [...wChips.children].forEach(c=>c.classList.remove('sel'));
 }
 
+/* ---------- THE CHILD'S OWN VIEW ----------
+   The same promise the transparency card makes, kept. A child sees their own
+   check-ins and nothing else: no rule, no flag, no baseline, no comparison.
+   Being flagged is information for the adults around a child, not a label to
+   hand the child about themselves. */
+function showMine(){
+  const box=document.getElementById('mineBox');
+  if(box.innerHTML){box.innerHTML='';return;}
+  const h=HISTORY[CURRENT_KID].slice(-10);
+  const answered=h.filter(d=>d.score!=null);
+  const best=answered.filter(d=>d.score>=4).length;
+  let quiet=0; for(let i=h.length-1;i>=0&&h[i].score==null;i--) quiet++;
+  box.innerHTML=`<div class="mine">
+    <h5>Your last ${h.length} school days, ${CURRENT_KID}</h5>
+    <div class="sub2">This is everything Sunny keeps about you. Nothing is hidden from you.</div>
+    <div class="days">${h.map(d=>
+      `<div class="d">${faceSVG(d.score,30)}<span>${DAYNAME[d.dow]}</span></div>`).join('')}</div>
+    <div class="msg">${
+      answered.length===0
+        ? "You haven't checked in for a while. That's allowed — there's no rule that says you have to."
+        : quiet>=3
+        ? "You haven't picked a face for a few days. That's completely okay. There's one waiting whenever you feel like it."
+        : best>=answered.length-1
+        ? "Lots of good days lately. Nice."
+        : best===0
+        ? "That's been a hard stretch. It's okay for a week to look like this, and your teacher knows so they can help."
+        : "Some good days and some harder ones — which is what most weeks look like for most people."
+    }</div>
+  </div>`;
+}
+
 /* ---------- TEACHER DATA ----------
    30 school days of history per child. Generated deterministically so every
    machine shows the identical demo, then fed to the real rule engine below —
@@ -549,6 +639,7 @@ function resetKid(){
 const NAMES=['Mia','Liam','Aroha','Noah','Ella','Kai','Sophie','Jack','Ruby','Tane','Olivia','Max',
 'Hana','Leo','Grace','Finn','Isla','Cody','Maia','Ben','Zoe','Nikau','Lily','Sam'];
 const DAYNAME=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const FULLDAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 /* the last 30 school days, ending today */
 const TODAY=new Date(2026,6,27);            // Monday 27 July 2026
@@ -584,6 +675,8 @@ NAMES.forEach((name,idx)=>{
       case 'Maia':  score = day.dow===1?2 : (r<0.3?4:5); break;
       /* median 4, yesterday already 2 below, today still normal */
       case 'Noah':  score = t===28?2 : t===29?4 : (r<0.62?4:5); break;
+      /* checked in happily for weeks, then simply stopped. null = no check-in */
+      case 'Isla':  score = t>=26?null : (r<0.4?4:5); break;
       default:      score = (t%7===3)?3 : (r<0.4?4:5);
     }
     return {...day,score};
@@ -594,16 +687,22 @@ NAMES.forEach((name,idx)=>{
    Three fixed arithmetic rules. Deterministic, auditable, no AI. Every rule
    measures distance from THIS child's own median — never from the class. */
 function median(nums){
-  const a=[...nums].sort((x,y)=>x-y),m=a.length>>1;
+  const a=nums.filter(v=>v!=null).sort((x,y)=>x-y),m=a.length>>1;
+  if(!a.length) return null;
   return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
 }
+/* A missing day is missing data, not a low score. R1-R3 therefore refuse to
+   fire across a gap — you cannot claim a 3-day drift through a day the child
+   never answered. R4 below is what covers the absence itself. */
+const answered=d=>d.score!=null;
 const RULES=[
   {id:'R1',name:'Sudden change',level:'high',span:2,gap:2,
    text:"Fires when a child's check-in sits ≥2 steps below their OWN 30-day median for 2 or more consecutive days.",
    short:(n,d)=>`${d.span} consecutive days ≥2 steps below their own 30-day median.`,
    test(h,med){
      const last=h.slice(-this.span);
-     return last.length===this.span && last.every(d=>med-d.score>=this.gap);
+     return last.length===this.span && last.every(answered)
+       && last.every(d=>med-d.score>=this.gap);
    },
    calc(h,med,name){
      const last=h.slice(-this.span);
@@ -616,7 +715,8 @@ const RULES=[
    short:(n,d)=>`${d.span} consecutive days ≥1.5 steps below their own 30-day median.`,
    test(h,med){
      const last=h.slice(-this.span);
-     return last.length===this.span && last.every(d=>med-d.score>=this.gap);
+     return last.length===this.span && last.every(answered)
+       && last.every(d=>med-d.score>=this.gap);
    },
    calc(h,med,name){
      const last=h.slice(-this.span);
@@ -626,18 +726,39 @@ const RULES=[
    }},
   {id:'R3',name:'Repeating cycle',level:'watch',gap:1.5,need:4,of:6,
    text:"Fires when the same weekday falls ≥1.5 steps below a child's OWN median in 4 or more of the last 6 occurrences.",
-   short:(n,d)=>`${d.hits} of their last ${d.of} ${d.dayName}s sit ≥1.5 steps below their own median.`,
-   sameDay(h){const dow=h[h.length-1].dow;return h.filter(d=>d.dow===dow).slice(-this.of)},
+   short:(n,d)=>d.hits===d.of
+     ? `Every one of their last ${d.of} ${d.dayName}s sits ≥1.5 steps below their own median.`
+     : `${d.hits} of their last ${d.of} ${d.dayName}s sit ≥1.5 steps below their own median.`,
+   sameDay(h){const dow=h[h.length-1].dow;return h.filter(d=>d.dow===dow&&answered(d)).slice(-this.of)},
    test(h,med){
      const same=this.sameDay(h);
      return same.length===this.of && same.filter(d=>med-d.score>=this.gap).length>=this.need;
    },
    calc(h,med,name){
-     const same=this.sameDay(h),dn=DAYNAME[h[h.length-1].dow];
+     const same=this.sameDay(h),dn=FULLDAY[h[h.length-1].dow];
      const hits=same.filter(d=>med-d.score>=this.gap).length;
      return `${name}'s 30-day median = ${med}\n`
        +`${dn}s (last ${this.of}): ${same.map(d=>d.score).join(', ')}\n`
        +`${hits} of ${this.of} ${dn}s ≥${this.gap.toFixed(1)} below → RULE FIRED`;
+   }},
+  /* Silence is the one signal a mood scale cannot express. A child who simply
+     stops answering produces no low scores at all — so without this rule they
+     become invisible at exactly the point you most want to see them. */
+  {id:'R4',name:'Stopped checking in',level:'high',span:3,
+   text:"Fires when a child who normally checks in has missed 3 or more school days in a row.",
+   short:(n,d)=>`No check-in for ${d.missed} school days, after checking in regularly.`,
+   missed(h){let c=0;for(let i=h.length-1;i>=0&&!answered(h[i]);i--)c++;return c},
+   test(h){
+     const missed=this.missed(h);
+     return missed>=this.span && h.slice(0,h.length-missed).some(answered);
+   },
+   calc(h,med,name){
+     const missed=this.missed(h),gapDays=h.slice(-missed);
+     const before=h.slice(0,h.length-missed).filter(answered).slice(-3);
+     return `${name} answered ${h.filter(answered).length} of the last ${h.length} school days\n`
+       +`Last 3 check-ins: ${before.map(d=>`${DAYNAME[d.dow]}=${d.score}`).join('  ')}\n`
+       +`Then: ${gapDays.map(d=>DAYNAME[d.dow]).join(', ')} — no answer\n`
+       +`${missed} consecutive school days missed → RULE FIRED`;
    }}
 ];
 
@@ -651,7 +772,10 @@ const LIMITS={
       next:"No urgency. Next time you're one-to-one anyway, leave a door open — “how's your week been?” — and let them fill the silence."},
   R3:{notMean:n=>`A weekday pattern says something about that weekday, not about ${n}. Sunny is pointing at a timetable, not at a child.`,
       alts:"a subject they dread that day · a swimming lesson · the transition back after a weekend · an early bus · a weekend routine they'd rather not leave",
-      next:"Look at what that morning actually involves before speaking to them — the answer may be in the timetable, and fixable without a conversation at all."}
+      next:"Look at what that morning actually involves before speaking to them — the answer may be in the timetable, and fixable without a conversation at all."},
+  R4:{notMean:n=>`Sunny knows only that no answer arrived. It does not know whether ${n} is upset, absent, bored of the app, or was simply never handed a device.`,
+      alts:"off sick · a broken tablet · a class that skipped the routine · quietly opting out, which is allowed · not wanting to answer honestly and choosing silence instead",
+      next:"Check the roll first — most silences are absence. If they have been in class and still not answering, that is worth a gentle word in person."}
 };
 
 /* ---------- SUPPORT PLANS ----------
@@ -745,8 +869,9 @@ function evaluateAll(){
     for(const r of RULES){
       if(r.test(h,med)){
         const dow=h[h.length-1].dow;
-        const detail={span:r.span,of:r.of,dayName:DAYNAME[dow],
-          hits:r.id==='R3'?r.sameDay(h).filter(d=>med-d.score>=r.gap).length:0};
+        const detail={span:r.span,of:r.of,dayName:FULLDAY[dow],
+          hits:r.id==='R3'?r.sameDay(h).filter(d=>med-d.score>=r.gap).length:0,
+          missed:r.id==='R4'?r.missed(h):0};
         out[name]={level:r.level,rule:r.id,ruleName:r.name,ruleText:r.text,
           calc:r.calc(h,med,name),short:r.short(name,detail),
           notMean:LIMITS[r.id].notMean(name),alts:LIMITS[r.id].alts,next:LIMITS[r.id].next};
@@ -788,17 +913,18 @@ function renderTeacher(){
     const f=FLAGS[n];
     const s=document.createElement('div');s.className='signal'+(f.level==='high'?' high':'');
     s.innerHTML=`<div class="row"><span class="who">${n}</span><span class="tag">${f.ruleName}</span></div>
-      <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n].toFixed(1)}</div>`;
+      <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n]==null?'—':BASE[n].toFixed(1)}</div>`;
     s.onclick=()=>openDetail(n);
     sigList.appendChild(s);
   });
   document.getElementById('calmNote').style.display=flagged.length?'none':'block';
 
-  const avg=NAMES.reduce((a,n)=>a+DATA[n][4],0)/NAMES.length;
+  const today=NAMES.map(n=>DATA[n][4]).filter(v=>v!=null);
+  const avg=today.reduce((a,v)=>a+v,0)/(today.length||1);
   document.getElementById('classMood').textContent=
     avg>=4.4?'Mostly great':avg>=3.7?'Mostly good':avg>=3?'A flatter day':'A hard day';
   document.getElementById('checkedIn').textContent=
-    `Monday 27 July · ${NAMES.length} of ${NAMES.length} checked in`;
+    `Monday 27 July · ${today.length} of ${NAMES.length} checked in`;
 }
 
 /* Recomputes every rule from scratch, then repaints. */
@@ -827,19 +953,28 @@ showView=function(v){
 function openDetail(n){
   document.querySelectorAll('.stu').forEach(x=>x.classList.toggle('active',x.dataset.name===n));
   const p=document.getElementById('detailPanel');p.classList.add('show');
-  const f=FLAGS[n],b=BASE[n].toFixed(1);
+  const f=FLAGS[n],b=BASE[n]==null?'—':BASE[n].toFixed(1);
   document.getElementById('dName').textContent=n;
   document.getElementById('dSub').textContent=f
     ?`Signal raised by rule ${f.rule} · ${f.ruleName}`
     :'No signal — shown for transparency. Any child can be opened at any time.';
 
   document.getElementById('weekChart').innerHTML=DATA[n].map((s,i)=>
-    `<div class="day"><div class="de">${faceSVG(s,22)}</div><div class="bar"><div class="fill" style="height:${s*13}px;background:${sColor(s)}"></div></div><div class="dl">${DAYS[i]}</div></div>`).join('');
+    `<div class="day"><div class="de">${faceSVG(s,22)}</div><div class="bar">${s==null
+       ? '<div class="nofill">no answer</div>'
+       : `<div class="fill" style="height:${s*13}px;background:${sColor(s)}"></div>`}</div><div class="dl">${DAYS[i]}</div></div>`).join('');
   document.getElementById('dBaseline').innerHTML=`<b>${n}'s own 30-day baseline: ${b}</b> — every rule below measures distance from this line, not from the class.`;
   document.getElementById('dTrail').textContent=
-    DATA[n].map((s,i)=>`${DAYS[i]}=${s}`).join('  ')+`   |  median=${b}  |  Δ today=${(DATA[n][4]-b).toFixed(1)}`;
+    DATA[n].map((s,i)=>`${DAYS[i]}=${s==null?'--':s}`).join('  ')
+    +`   |  median=${b}  |  `
+    +(DATA[n][4]==null||BASE[n]==null?'no check-in today':`Δ today=${(DATA[n][4]-BASE[n]).toFixed(1)}`);
 
   renderPlan(n);
+  const eb=document.getElementById('escBox');
+  const raised=ESCALATIONS.filter(e=>e.name===n);
+  eb.innerHTML=raised.length
+    ? `<div class="esc-done"><b>✓ Already raised to ${WELLBEING_LEAD}</b> — ${raised[raised.length-1].at}.</div>`
+    : '';
   document.getElementById('dActions').style.display=f?'flex':'none';
   if(f){
     document.getElementById('dRuleId').textContent=`${f.rule} · ${f.ruleName}`;
@@ -850,8 +985,10 @@ function openDetail(n){
     document.getElementById('dNext').textContent=f.next;
   }else{
     document.getElementById('dRuleId').textContent='No rule fired';
-    document.getElementById('dRuleText').textContent=`All three rules were evaluated against ${n}'s own baseline and none triggered.`;
-    document.getElementById('dRuleCalc').innerHTML='R1 sudden change &nbsp;→ not met<br>R2 sustained drift &nbsp;→ not met<br>R3 repeating cycle → not met';
+    document.getElementById('dRuleText').textContent=
+      `All ${RULES.length} rules were evaluated against ${n}'s own baseline and none triggered.`;
+    document.getElementById('dRuleCalc').innerHTML=
+      RULES.map(r=>`${r.id} ${r.name.toLowerCase()} → not met`).join('<br>');
     document.getElementById('dNotMean').textContent=`No signal does not mean ${n} is fine. A child can be struggling and still tap “great” every day. Sunny is one small input, never a substitute for knowing your class.`;
     document.getElementById('dAlts').textContent='masking · not trusting the app · having a genuinely good week';
     document.getElementById('dNext').textContent='Nothing suggested. Sunny stays quiet unless a rule fires.';
@@ -860,6 +997,79 @@ function openDetail(n){
   document.querySelectorAll('.act').forEach(a=>a.classList.remove('done'));
   p.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
+/* ---------- ESCALATION ----------
+   The one path by which anything leaves the classroom. It is manual, it shows
+   the teacher exactly what will be sent before they send it, and it carries
+   numbers and human notes — never an interpretation of the child. */
+const ESCALATIONS=[];
+const WELLBEING_LEAD='Mrs Patel (wellbeing lead)';
+
+function escalationPackage(n){
+  const f=FLAGS[n], pl=PLANS[n];
+  return [
+    `child:        ${n}, Room 6`,
+    `raised_by:    You (class teacher)`,
+    `raised_at:    Mon 27 Jul 2026, 9:14am`,
+    `rule:         ${f?f.rule+' '+f.ruleName:'none — raised manually'}`,
+    `own_median:   ${BASE[n]==null?'—':BASE[n].toFixed(1)}`,
+    `last_5:       ${DATA[n].map(v=>v==null?'--':v).join(', ')}`,
+    `support_plan: ${pl?'attached — written by '+pl.author:'none on file'}`,
+  ].join('\n');
+}
+
+function escalate(n){
+  const box=document.getElementById('escBox');
+  box.innerHTML=`<div class="esc-panel">
+    <h4>Raise ${n} to ${WELLBEING_LEAD}?</h4>
+    <div class="lead">Nothing has been sent yet. This is exactly what they would receive.</div>
+    <div class="esc-cols">
+      <div class="esc-col send">
+        <h5>What gets sent</h5>
+        <ul>
+          <li>The rule that fired, and the arithmetic behind it</li>
+          <li>${n}'s own median and last five check-ins</li>
+          <li>${PLANS[n]?"Their support plan, so the lead knows what helps":"A note that no support plan exists yet"}</li>
+          <li>Anything you write below, in your own words</li>
+        </ul>
+        <div class="pkg">${escalationPackage(n)}</div>
+      </div>
+      <div class="esc-col hold">
+        <h5>What never gets sent</h5>
+        <ul>
+          <li>Any diagnosis, label or clinical language</li>
+          <li>Any claim about how ${n} feels, or why</li>
+          <li>The AI's suggested wording — that was for you, not for a file</li>
+          <li>Comparison to any other child in the class</li>
+        </ul>
+      </div>
+    </div>
+    <div class="esc-note">
+      <label>Your note to ${WELLBEING_LEAD} — the part only you can write</label>
+      <textarea id="escNote" placeholder="What you have seen in class, in your own words. This is the most useful part of the whole record."></textarea>
+    </div>
+    <div class="planact" style="margin-top:13px">
+      <button class="act esc" onclick="confirmEscalate('${n}')">Send to ${WELLBEING_LEAD.split(' ')[0]} ${WELLBEING_LEAD.split(' ')[1]}</button>
+      <button class="act" onclick="document.getElementById('escBox').innerHTML=''">Cancel</button>
+    </div>
+  </div>`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function confirmEscalate(n){
+  const note=(document.getElementById('escNote')||{}).value||'';
+  const rec={name:n,rule:FLAGS[n]&&FLAGS[n].rule,note:note.trim(),at:'Mon 27 Jul 2026, 9:14am'};
+  ESCALATIONS.push(rec);
+  document.getElementById('escBox').innerHTML=`<div class="esc-done">
+    <b>✓ Raised to ${WELLBEING_LEAD}.</b> ${n} stays on your board — raising is not handing over.
+    <div class="trail">audit trail entry
+${escalationPackage(n)}
+teacher_note: ${rec.note?JSON.stringify(rec.note):'(none written)'}</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-top:9px">
+      ${n} can ask to see this record. Nothing about a child is kept where the child may not look.</div>
+  </div>`;
+  renderTeacher();
+}
+
 /* The teacher's judgement overrides the rule. Dismissals are kept so the
    false-positive rate can be measured honestly rather than guessed at. */
 const DISMISSED=[];

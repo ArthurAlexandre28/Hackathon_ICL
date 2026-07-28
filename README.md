@@ -16,10 +16,19 @@ cannot read 26 inner states at once.
 - **Kids** tap a face (Great → Really bad) instead of naming an emotion. Optional one-tap
   "why", including *"I'd rather not say."*
 - **Teachers** get an at-a-glance class grid plus **soft signals** — not alarms.
-- **Three transparent rules** spot patterns over time that a human scanning a grid would miss:
+- **Four transparent rules** spot patterns over time that a human scanning a grid would miss:
   - a sudden drop from a child's *own* normal (Cody — R1)
   - a slow downward drift over several days (Aroha — R2)
   - a repeating weekly cycle (Maia — every Monday — R3)
+  - a child who has **stopped checking in at all** (Isla — R4)
+
+### Why silence is a rule
+
+A mood scale cannot express "I have stopped answering". A child who quietly disengages
+produces no low scores, so without R4 they become invisible at exactly the point you most
+want to see them. A missing day is treated as *missing data, never a low score* — R1–R3
+refuse to fire across a gap, because you cannot claim a three-day drift through a day the
+child never answered.
 
 ### Why faces, and why a thumbs-down at the bottom
 
@@ -47,8 +56,8 @@ core architectural decision:
 
 | Stage | What happens | AI involved? |
 |---|---|---|
-| 1 · Input | 5 numbers (this week) + this child's 30-day median | No |
-| 2 · Detection | Three fixed arithmetic rules | **No** |
+| 1 · Input | This child's 30 school days of check-ins, and their own median | No |
+| 2 · Detection | Four fixed arithmetic rules | **No** |
 | 3 · Wording | Turns a fired rule into a plain-English suggestion | Yes |
 | 4 · Decision | The teacher decides | No |
 
@@ -66,7 +75,7 @@ baseline, which is the single biggest risk in a tool like this.
 ### The rules genuinely run
 
 Detection is not a lookup table. `HISTORY` holds 30 school days per child;
-`evaluateAll()` computes each child's own median and runs all three rules against it,
+`evaluateAll()` computes each child's own median and runs all four rules against it,
 and the arithmetic shown in the panel is generated from those numbers rather than typed
 in. Nothing decides which children are flagged except the thresholds.
 
@@ -87,6 +96,25 @@ case — rule R3 reports "5 of her last 6 Mondays are low", and her mum has alre
 *"Swimming is Monday, first period. It's the changing rooms she can't stand."* The rule
 found the pattern; a human already knew the reason.
 
+### Escalation is manual, previewed, and logged
+
+Every signal ends with a human decision, and one of the options is raising the child to
+the wellbeing lead. Before anything is sent the teacher sees **exactly what the package
+contains** — the rule and its arithmetic, the child's own median and last five check-ins,
+their support plan, and the teacher's own note — alongside what is deliberately excluded:
+any diagnosis, any claim about how the child feels, the AI's wording, and any comparison
+to another child.
+
+Two deliberate choices: escalation **never requires a rule to have fired**, because a
+teacher does not need an algorithm's permission to raise a concern; and the resulting
+audit-trail entry is something **the child themselves can ask to see**.
+
+### The child can see their own data
+
+The kid view has a *"See my check-ins"* button showing that child's own last ten days —
+and nothing else. No rule, no flag, no baseline, no comparison to anyone. Being flagged is
+information for the adults around a child, not a label to hand the child about themselves.
+
 ### Every signal states its own limits
 
 The detail panel walks through five steps — the data, the rule that fired, **what this does
@@ -99,7 +127,7 @@ not mean a child is fine.
 
 | File | What it is |
 |---|---|
-| `index.html` | The prototype — check-in flow, rule engine, support plans. Open in any browser; no install, no server, no accounts. |
+| `index.html` | The prototype — check-in flow, rule engine, support plans, escalation. Open in any browser; no install, no server, no accounts. |
 | `Sunny-Pitch-Deck.pptx` | 12-slide pitch deck, with timed speaker notes and prepared Q&A on every slide. |
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
 | `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
@@ -119,19 +147,23 @@ npm install pptxgenjs sharp && node deck-build.js && python3 dedupe.py Sunny-Pit
 
 1. **Kid view** — tap "Not good", tap a reason, send. Note the warm response and the
    *"What happens to my check-in?"* panel — the child can see the rules too.
-2. **Teacher view** — show the class grid. Mostly bright, three soft signals. Point at the
+2. **Teacher view** — show the class grid. Mostly bright, four soft signals. Point at the
    note under the grid: *an "okay" day is not a signal.*
 3. **Check in as Noah** ("Not good") — then switch to the teacher view and watch a new
    signal appear that did not exist a moment ago. This is the answer to "is it hardcoded?"
+   Bonus: check in as **Isla** and watch her R4 signal *clear* — the rules resolve as well
+   as fire.
 4. **Click Maia** — rule R3 finds the Monday pattern; her mum's plan, one step above the
    AI, already says swimming is Monday first period. The machine found it, a human
    explained it.
 5. **Click Cody** — this is the moment. Bright all week, then a two-step drop today.
    Walk the four steps: the data → the rule that fired → **what this does not mean** → the
    AI's suggested wording.
-6. **Open "How Sunny works"** — the collect / detect / word / decide pipeline, with
+6. **Open "How Sunny works"**  — the collect / detect / word / decide pipeline, with
    detection marked **NO AI**.
-7. **Land the point** — Sunny didn't diagnose Cody, and didn't decide anything. It did
+7. **Raise Isla to the wellbeing lead** — show the two columns: what gets sent, and what
+   never does. This is the slide judges will remember on safeguarding.
+8. **Land the point** — Sunny didn't diagnose Cody, and didn't decide anything. It did
    arithmetic on five numbers, showed its working, and made sure a caring adult noticed.
 
 ### Expect these questions
@@ -166,7 +198,8 @@ This is the core of the pitch, not a disclaimer bolted on:
 ## Status
 
 Level 1 prototype — front-end only, **simulated history**, no backend or live model calls.
-The rule engine, the check-in flow and the support plans are real and run in the browser;
+The rule engine, the check-in flow, the support plans and the escalation trail are real
+and run in the browser;
 what is simulated is the 30 days of history they operate on, and the AI's suggested
 wording is a per-rule template rather than a live API call.
 
