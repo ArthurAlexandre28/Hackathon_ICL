@@ -40,6 +40,71 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
   .section-title{font-size:.78rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
 
+  /* ---------- SIGN IN ---------- */
+  .login{max-width:620px;margin:0 auto}
+  .login-card{padding:34px 30px;text-align:center;position:relative}
+  .login h1{font-size:1.6rem;margin-bottom:6px}
+  .login .sub{color:var(--muted);margin-bottom:24px;font-size:.93rem}
+  .back{position:absolute;top:14px;left:16px;border:0;background:transparent;color:var(--muted);
+    font-weight:700;font-size:.82rem;cursor:pointer;padding:4px 6px;border-radius:8px}
+  .back:hover{color:var(--brand)}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.roles{grid-template-columns:1fr}}
+  .role{border:2px solid var(--line);background:var(--card);border-radius:18px;padding:24px 16px;
+    cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .role:hover{transform:translateY(-4px);border-color:var(--brand);box-shadow:var(--shadow)}
+  .role .ico{width:62px;height:62px;display:flex;align-items:center;justify-content:center;font-size:2.4rem}
+  .role .ico svg{width:62px;height:62px}
+  .role .ico.teach{background:var(--brand-soft);border-radius:50%}
+  .role b{font-size:1.05rem}
+  .role span{font-size:.78rem;color:var(--muted);line-height:1.35}
+  .code{width:100%;max-width:260px;font-family:var(--mono);font-size:1.6rem;font-weight:800;
+    letter-spacing:.28em;text-align:center;color:var(--ink);background:var(--bg);
+    border:2px solid var(--line);border-radius:14px;padding:13px 10px;text-indent:.28em}
+  .code:focus{outline:none;border-color:var(--brand)}
+  .login .send{max-width:260px;margin:16px auto 0;display:block}
+  .err{margin-top:12px;font-size:.85rem;color:var(--alert);font-weight:700}
+  .nopass{margin-top:20px;font-size:.8rem;color:var(--muted);line-height:1.5;
+    border-top:1px dashed var(--line);padding-top:16px}
+  .nopass.demo{font-size:.86rem}
+  .nopass.demo b{font-family:var(--mono);color:var(--brand);font-size:1rem;letter-spacing:.1em}
+  .namegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+  .namegrid button{border:1px solid var(--line);background:var(--card);border-radius:14px;
+    padding:12px 6px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:7px}
+  .namegrid button:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:var(--shadow)}
+  .namegrid svg{width:34px;height:34px}
+  .namegrid span{font-size:.8rem;font-weight:700}
+  .proto-note{margin-top:16px;padding:16px 20px;font-size:.82rem;color:var(--muted);line-height:1.55;text-align:left}
+  .proto-note b{color:var(--warn)}
+  .session[hidden]{display:none}   /* display:flex would otherwise beat [hidden] */
+  .session{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:999px;padding:5px 6px 5px 15px;box-shadow:var(--shadow)}
+  .session span{font-size:.84rem;font-weight:700}
+  .session button{border:0;background:var(--bg);color:var(--muted);font-weight:700;font-size:.8rem;
+    padding:7px 13px;border-radius:999px;cursor:pointer}
+  .session button:hover{color:var(--alert)}
+
+  .live{display:flex;align-items:center;gap:7px;background:color-mix(in srgb,var(--good) 14%,transparent);
+    border:1px solid var(--good);border-radius:999px;padding:7px 14px;font-size:.76rem;
+    font-weight:800;letter-spacing:.08em;color:var(--good)}
+  .live[hidden]{display:none}
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--good);animation:blip 1.6s infinite}
+  .live.pulse{transform:scale(1.06);transition:transform .2s}
+  .live.stale{border-color:var(--warn);color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent)}
+  .live.stale i{background:var(--warn)}
+  @keyframes blip{0%,100%{opacity:1}50%{opacity:.25}}
+  .joinalt{margin-top:20px;border-top:1px dashed var(--line);padding-top:18px}
+  .joinalt[hidden]{display:none}
+  .joinalt .or{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px}
+  .joinalt input{width:100%;max-width:280px;font-family:inherit;font-size:1rem;font-weight:600;
+    text-align:center;color:var(--ink);background:var(--bg);border:2px solid var(--line);
+    border-radius:12px;padding:11px 14px;margin-bottom:11px}
+  .joinalt input:focus{outline:none;border-color:var(--brand)}
+  .stu.guest .name{color:var(--brand)}
+  .stu.guest::before{content:"new";position:absolute;top:6px;left:7px;font-size:.55rem;
+    font-weight:800;color:var(--brand);letter-spacing:.05em}
+
   /* ---------- KID VIEW ---------- */
   .kid{max-width:560px;margin:0 auto}
   .kid-card{padding:34px 28px;text-align:center;position:relative}
@@ -84,6 +149,17 @@
   .kid-see li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:800}
   .kid-see li.no::before{content:"✕";color:var(--alert)}
 
+  /* the child's own view of their own data — no rules, no flags, no judgement */
+  .mine{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg)}
+  .mine h5{font-size:.92rem;margin-bottom:3px}
+  .mine .sub2{font-size:.8rem;color:var(--muted);margin-bottom:14px}
+  .mine .days{display:flex;gap:7px;flex-wrap:wrap}
+  .mine .d{text-align:center;flex:1;min-width:44px}
+  .mine .d svg{width:30px;height:30px;margin:0 auto;display:block}
+  .mine .d span{display:block;font-size:.62rem;color:var(--muted);font-weight:700;margin-top:5px}
+  .mine .msg{margin-top:14px;font-size:.85rem;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:10px;padding:11px 13px;line-height:1.5}
+
   /* ---------- TEACHER VIEW ---------- */
   .t-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:18px}
   .t-head h2{font-size:1.45rem}
@@ -105,6 +181,11 @@
   .legend i{width:14px;height:14px;border-radius:50%;display:inline-block}
   .baseline-note{margin-top:12px;font-size:.78rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
 
+  .t-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .resetbtn{border:1px solid var(--line);background:var(--card);color:var(--muted);
+    font-size:.75rem;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
+  .resetbtn[hidden]{display:none}
+  .resetbtn:hover{border-color:var(--alert);color:var(--alert)}
   .signals{padding:20px}
   .signal{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:12px;padding:14px;margin-bottom:12px;cursor:pointer;transition:.15s}
   .signal:hover{background:var(--brand-soft)}
@@ -131,6 +212,7 @@
   .day .bar{height:70px;display:flex;align-items:flex-end;justify-content:center;position:relative}
   .day .fill{width:28px;border-radius:8px 8px 4px 4px;transition:.3s}
   .day .dl{font-size:.7rem;color:var(--muted);margin-top:6px;font-weight:700}
+  .day .nofill{font-size:.6rem;color:var(--muted);align-self:center;text-align:center;line-height:1.2;opacity:.75}
   .day .de{font-size:1rem}
   .day .de svg{margin:0 auto;display:block}
   .bl-row{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted);margin-top:6px;padding:9px 12px;background:var(--bg);border-radius:10px}
@@ -181,6 +263,35 @@
   .acted{font-size:.82rem;color:var(--good);font-weight:700;margin-top:10px;display:none}
   .acted.show{display:block}
 
+  .escalate-any{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .escalate-any span{font-size:.78rem;color:var(--muted);flex:1;min-width:220px}
+  .act.esc{border-color:var(--alert);color:var(--alert)}
+  .act.esc:hover{background:color-mix(in srgb,var(--alert) 10%,transparent);color:var(--alert)}
+  .esc-panel{margin-top:14px;border:1px solid var(--alert);border-radius:14px;padding:16px;
+    background:color-mix(in srgb,var(--alert) 5%,transparent)}
+  .esc-panel h4{font-size:.95rem;margin-bottom:4px}
+  .esc-panel .lead{font-size:.82rem;color:var(--muted);margin-bottom:14px}
+  .esc-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.esc-cols{grid-template-columns:1fr}}
+  .esc-col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px}
+  .esc-col h5{font-size:.72rem;letter-spacing:.6px;text-transform:uppercase;margin-bottom:9px}
+  .esc-col.send h5{color:var(--good)}
+  .esc-col.hold h5{color:var(--alert)}
+  .esc-col ul{list-style:none;font-size:.82rem;color:var(--ink)}
+  .esc-col li{padding:4px 0 4px 20px;position:relative;line-height:1.45}
+  .esc-col.send li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:800}
+  .esc-col.hold li::before{content:"✕";position:absolute;left:0;color:var(--alert);font-weight:800}
+  .esc-col .pkg{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:8px;
+    border-top:1px dashed var(--line);padding-top:8px;white-space:pre-wrap;line-height:1.5}
+  .esc-note{margin-top:13px}
+  .esc-note label{display:block;font-size:.78rem;font-weight:800;margin-bottom:5px}
+  .esc-note textarea{width:100%;font-family:inherit;font-size:.87rem;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-height:56px;resize:vertical}
+  .esc-done{margin-top:14px;border:1px solid var(--good);background:color-mix(in srgb,var(--good) 8%,transparent);
+    border-radius:12px;padding:14px;font-size:.87rem}
+  .esc-done b{color:var(--good)}
+  .esc-done .trail{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:9px;white-space:pre-wrap}
   .disclaimer{margin-top:22px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:.82rem;color:var(--muted);display:flex;gap:10px;align-items:flex-start}
 
   /* ---------- MODAL ---------- */
@@ -216,20 +327,91 @@
     </div>
     <div class="topbtns">
       <button class="howbtn" onclick="openHow()">🔍 How Sunny works</button>
-      <div class="toggle">
-        <button id="tabKid" class="active" onclick="showView('kid')">🧒 Kid</button>
-        <button id="tabTeacher" onclick="showView('teacher')">🍎 Teacher</button>
+      <div class="live" id="liveBadge" hidden title="Shared class — visitors' check-ins appear here live">
+        <i></i><span>LIVE</span>
+      </div>
+      <div class="session" id="session" hidden>
+        <span id="sessionWho"></span>
+        <button onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SIGN IN ============ -->
+  <div id="viewLogin" class="view active">
+    <div class="login">
+      <div class="card login-card" id="loginPick">
+        <h1>Who's signing in?</h1>
+        <div class="sub">Sunny keeps the two apart on purpose — the teacher's screen holds
+          24 other children's check-ins.</div>
+        <div class="roles">
+          <button class="role" onclick="pickRole('student')">
+            <div class="ico" id="roleKidFace"></div>
+            <b>I'm a student</b>
+            <span>Check in, and look at your own check-ins</span>
+          </button>
+          <button class="role" onclick="pickRole('teacher')">
+            <div class="ico teach">🍎</div>
+            <b>I'm a teacher</b>
+            <span>Your class, the signals, and the support plans</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- student: class code, then tap your name -->
+      <div class="card login-card" id="loginStudent" hidden>
+        <button class="back" onclick="backToRoles()">← Back</button>
+        <h1>Hi! What's your class code?</h1>
+        <div class="sub">Your teacher will have it written on the board.</div>
+        <input id="classCode" class="code" value="ROOM6" maxlength="8" autocomplete="off"
+          oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')enterClass()">
+        <button class="send" onclick="enterClass()">Next</button>
+        <div class="err" id="codeErr" hidden>That code doesn't match a class. Check the board and try again.</div>
+        <div class="nopass">No password, on purpose. A 20-second check-in shouldn't start
+          with a password an 8-year-old has to remember.</div>
+      </div>
+
+      <div class="card login-card" id="loginName" hidden>
+        <button class="back" onclick="backToRoles()">← Back</button>
+        <h1>Find your name</h1>
+        <div class="sub">Tap yourself. You'll only ever see your own check-ins —
+          this list shows names, never how anyone is feeling.</div>
+        <div class="namegrid" id="nameGrid"></div>
+        <div class="joinalt" id="joinAlt" hidden>
+          <div class="or">visiting today?</div>
+          <input id="guestName" placeholder="Your first name" maxlength="18" autocomplete="off"
+            onkeydown="if(event.key==='Enter')joinAsGuest()">
+          <button class="act" onclick="joinAsGuest()">Join Room 6</button>
+          <div class="err" id="guestErr" hidden></div>
+        </div>
+      </div>
+
+      <!-- teacher: a real PIN -->
+      <div class="card login-card" id="loginTeacher" hidden>
+        <button class="back" onclick="backToRoles()">← Back</button>
+        <h1>Teacher sign-in</h1>
+        <div class="sub">Room 6 · Mrs Patel</div>
+        <input id="pin" class="code" type="password" inputmode="numeric" maxlength="4"
+          placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter')enterTeacher()">
+        <button class="send" onclick="enterTeacher()">Sign in</button>
+        <div class="err" id="pinErr" hidden>Wrong PIN.</div>
+        <div class="nopass demo">Demo PIN: <b>2026</b></div>
+      </div>
+
+      <div class="card proto-note">
+        <b>⚠️ Prototype sign-in.</b> This runs entirely in your browser and secures nothing —
+        there is no server to check anything against. It is here to show the two roles are
+        separate surfaces with different data, which is a real product requirement. Real
+        deployment would use the school's existing single sign-on, and the teacher screen
+        would never be reachable from a student device.
       </div>
     </div>
   </div>
 
   <!-- ============ KID VIEW ============ -->
-  <div id="viewKid" class="view active">
+  <div id="viewKid" class="view">
     <div class="kid">
       <div class="card kid-card" id="kidMain">
-        <div class="whoami">demo · checking in as
-          <select id="whoSel" onchange="switchKid()"></select>
-        </div>
         <h1>Hi <span id="kidName">Mia</span>! How are you feeling today?</h1>
         <div class="sub">Tap the one that looks most like you right now.</div>
         <div class="mood-row" id="moodRow"></div>
@@ -253,10 +435,12 @@
         <ul>
           <li>Your teacher sees the face you picked. That's it.</li>
           <li>You can always pick <b>“I'd rather not say.”</b></li>
-          <li>You can ask your teacher to show you your own chart, any time.</li>
+          <li>You can look at your own check-ins whenever you want.</li>
           <li class="no">Nobody is told <i>why</i> you feel something unless you say so.</li>
           <li class="no">Your check-ins are never compared to your classmates'.</li>
         </ul>
+        <button class="act" style="margin-top:14px" onclick="showMine()">See my check-ins</button>
+        <div id="mineBox"></div>
       </div>
     </div>
   </div>
@@ -268,7 +452,10 @@
         <h2>Room 6 · Morning check-in</h2>
         <div class="meta" id="checkedIn">Monday 27 July · 24 of 26 checked in</div>
       </div>
-      <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
+      <div class="t-right">
+        <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
+        <button class="resetbtn" id="resetBtn" hidden onclick="confirmReset()">Clear visitors &amp; restart demo</button>
+      </div>
     </div>
 
     <div class="grid-2">
@@ -345,6 +532,12 @@
             <button class="act" onclick="act(this,'known',document.getElementById('dName').textContent)">I know why — mute 2 weeks</button>
             <button class="act" onclick="act(this,'wrong',document.getElementById('dName').textContent)">Not concerning — dismiss</button>
           </div>
+          <div class="escalate-any">
+            <button class="act esc" onclick="escalate(document.getElementById('dName').textContent)">↑ Raise to wellbeing lead</button>
+            <span>A teacher never needs a rule's permission to raise a concern.
+              This works whether or not anything fired.</span>
+          </div>
+          <div id="escBox"></div>
           <div class="acted" id="dActed">Recorded. The teacher's judgement always overrides the rule.</div>
         </div>
       </div>
@@ -463,7 +656,30 @@ const THUMB='<g transform="rotate(180 50 50)" fill="#fff">'
   +'<path d="M36.5,79 h26.5 c4.6,0 8-2.9 8.9-7.2 l3.9-17.6 c1-4.7-2-8.6-6.8-8.6 h-13.2 '
   +'c1-3.4 1.5-6.6 1.5-9.5 0-4.6-3.1-7.6-6.8-6.3-2.5.9-2.8,4.4-3.3,8.1 -.8,5.9-3.7,11.1-9.7,14.1 z"/></g>';
 
+/* a child who has not checked in: deliberately hollow, never a sad face —
+   we do not know how they feel, and the tile must not imply that we do */
+function noFaceSVG(size){
+  const sz=size||100;
+  return `<svg viewBox="0 0 100 100" width="${sz}" height="${sz}" role="img" aria-label="No check-in">`
+    +`<circle cx="50" cy="50" r="45" fill="none" stroke="var(--line)" stroke-width="6" stroke-dasharray="9 8"/>`
+    +`<line x1="36" y1="50" x2="64" y2="50" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/></svg>`;
+}
+/* Sign-in avatar: the child's initial, tinted from their NAME. Deliberately not
+   their check-in face — the sign-in list is seen by every child in the class, and
+   how a classmate feels today is none of their business. */
+const AVATAR_TINTS=['#5b8def','#3bb27a','#e8a13a','#8b7fd9','#e07a9a','#4bb3c4'];
+function initialSVG(name,size){
+  const sz=size||100;
+  let hash=0; for(let i=0;i<name.length;i++) hash=(hash*31+name.charCodeAt(i))>>>0;
+  const c=AVATAR_TINTS[hash%AVATAR_TINTS.length];
+  return `<svg viewBox="0 0 100 100" width="${sz}" height="${sz}" role="img" aria-label="${name}">`
+    +`<circle cx="50" cy="50" r="48" fill="${c}"/>`
+    +`<text x="50" y="50" text-anchor="middle" dominant-baseline="central" `
+    +`font-family="Segoe UI,system-ui,sans-serif" font-size="44" font-weight="700" fill="#fff">`
+    +`${name[0].toUpperCase()}</text></svg>`;
+}
 function faceSVG(score,size){
+  if(score==null) return noFaceSVG(size);
   const s=size||100;
   const eyes='<circle cx="36" cy="41" r="5.5" fill="#3a4a5e"/><circle cx="64" cy="41" r="5.5" fill="#3a4a5e"/>';
   const face=score===1 ? THUMB
@@ -476,11 +692,181 @@ const LBL={5:'Great',4:'Good',3:'Okay',2:'Not good',1:'Really bad'};
 
 const WHY=['😴 Tired','👫 Friend stuff','📚 Worried about work','🏠 Home stuff','🎉 Excited','🤐 Rather not say'];
 
+/* ---------- LIVE MODE ----------
+   When served by server.js the class is shared across devices: visitors join on
+   their own phones and appear on the projected teacher screen within ~1.5s.
+   Opened straight from the filesystem there is no server, so the app silently
+   stays in single-device mode and every existing demo still works. The rule
+   engine never moves — the server stores check-ins, the browser decides what
+   they mean. */
+/* Names reach the DOM from the network, and real names contain apostrophes
+   (O'Brien, Ngā Rima). Never interpolate one into an inline handler — pass it
+   through a data attribute and read it back. */
+const htm=v=>String(v).replace(/[&<>"']/g,c=>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DETAIL_NAME=null;                             // child currently open in the panel
+
+let LIVE=false, LIVE_EPOCH=null, pollTimer=null;
+const GUESTS=[];                                  // names of people who joined live
+
+async function api(path,body){
+  const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)}:{});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function detectLive(){
+  try{
+    const st=await api('/api/state');
+    LIVE=true; LIVE_EPOCH=st.epoch;
+    applyServerState(st);
+  }catch{ LIVE=false; }
+  document.getElementById('liveBadge').hidden=!LIVE;
+  document.getElementById('joinAlt').hidden=!LIVE;
+  document.getElementById('resetBtn').hidden=!LIVE;
+}
+
+/* Fold the server's check-ins into the local class, then re-run the rules. */
+function applyServerState(st){
+  if(LIVE_EPOCH!==null && st.epoch!==LIVE_EPOCH){    // someone reset the demo
+    GUESTS.splice(0,GUESTS.length);
+    NAMES.length=SEEDED.length; SEEDED.forEach((n,i)=>NAMES[i]=n);
+    LIVE_EPOCH=st.epoch;
+  }
+  st.guests.forEach(g=>{
+    if(!HISTORY[g.name]){
+      /* a visitor has no history — they are simply a new face in the room today */
+      HISTORY[g.name]=CALENDAR.map((day,t)=>({...day,score:t===29?g.score:null}));
+      PLANS[g.name]=undefined;
+      NAMES.push(g.name); GUESTS.push(g.name);
+    }else{
+      HISTORY[g.name][29].score=g.score;
+      HISTORY[g.name][29].why=g.why;
+    }
+  });
+  Object.entries(st.checkins).forEach(([n,c])=>{
+    if(HISTORY[n]){ HISTORY[n][29].score=c.score; HISTORY[n][29].why=c.why; }
+  });
+  recompute();
+}
+
+function startPolling(){
+  stopPolling();
+  if(!LIVE) return;
+  pollTimer=setInterval(async()=>{
+    try{
+      const before=NAMES.length;
+      applyServerState(await api('/api/state'));
+      const badge=document.getElementById('liveBadge');
+      badge.classList.remove('stale');
+      if(NAMES.length>before){
+        badge.classList.add('pulse');
+        setTimeout(()=>badge.classList.remove('pulse'),900);
+      }
+    }catch{ document.getElementById('liveBadge').classList.add('stale'); }
+  },1500);
+}
+function stopPolling(){ if(pollTimer){clearInterval(pollTimer);pollTimer=null;} }
+
+async function joinAsGuest(){
+  const el=document.getElementById('guestName');
+  const name=el.value.trim();
+  const err=document.getElementById('guestErr');
+  if(name.length<2){ err.textContent='Type your first name.'; err.hidden=false; return; }
+  if(NAMES.includes(name)){ err.textContent='Someone in the class already uses that name — add an initial.'; err.hidden=false; return; }
+  err.hidden=true;
+  try{
+    await api('/api/join',{name});
+    applyServerState(await api('/api/state'));
+    signInStudent(name);
+  }catch(e){ err.textContent='Could not join. Is the class still open?'; err.hidden=false; }
+}
+
+async function resetLive(){
+  if(!LIVE) return;
+  await api('/api/reset',{});
+  location.reload();
+}
+function confirmReset(){
+  const btn=document.getElementById('resetBtn');
+  if(btn.dataset.armed){ resetLive(); return; }
+  btn.dataset.armed='1';
+  btn.textContent='Sure? This clears every visitor — click again';
+  btn.style.borderColor='var(--alert)'; btn.style.color='var(--alert)';
+  setTimeout(()=>{delete btn.dataset.armed;btn.textContent='Clear visitors & restart demo';
+    btn.style.borderColor='';btn.style.color='';},4000);
+}
+
+/* ---------- SESSION ----------
+   Prototype only: this runs in the browser and secures nothing. It exists
+   because the two roles really are different surfaces over different data —
+   a student device must never be able to reach 24 other children's check-ins. */
+const CLASS_CODE='ROOM6', TEACHER_PIN='2026';
+let AUTH=null;                                  // {role:'student'|'teacher', name}
+
 function showView(v){
-  document.getElementById('viewKid').classList.toggle('active',v==='kid');
-  document.getElementById('viewTeacher').classList.toggle('active',v==='teacher');
-  document.getElementById('tabKid').classList.toggle('active',v==='kid');
-  document.getElementById('tabTeacher').classList.toggle('active',v==='teacher');
+  ['Login','Kid','Teacher'].forEach(k=>
+    document.getElementById('view'+k).classList.toggle('active',v===k.toLowerCase()));
+  const sess=document.getElementById('session');
+  sess.hidden=!AUTH;
+  if(AUTH) document.getElementById('sessionWho').textContent=
+    AUTH.role==='teacher' ? `🍎 ${AUTH.name}` : `👋 ${AUTH.name}`;
+  window.scrollTo(0,0);
+}
+
+function pickRole(r){
+  hideAllLogin();
+  document.getElementById(r==='student'?'loginStudent':'loginTeacher').hidden=false;
+  const f=document.getElementById(r==='student'?'classCode':'pin');
+  if(f){f.focus();f.select&&f.select();}
+}
+function hideAllLogin(){
+  ['loginPick','loginStudent','loginName','loginTeacher'].forEach(id=>
+    document.getElementById(id).hidden=true);
+  document.getElementById('codeErr').hidden=true;
+  document.getElementById('pinErr').hidden=true;
+}
+function backToRoles(){hideAllLogin();document.getElementById('loginPick').hidden=false;}
+
+function enterClass(){
+  const v=document.getElementById('classCode').value.trim().toUpperCase();
+  if(v!==CLASS_CODE){document.getElementById('codeErr').hidden=false;return;}
+  hideAllLogin();
+  document.getElementById('loginName').hidden=false;
+  const grid=document.getElementById('nameGrid');
+  grid.innerHTML=NAMES.map(n=>
+    `<button data-name="${htm(n)}">${initialSVG(n,34)}<span>${htm(n)}</span></button>`).join('');
+  grid.onclick=e=>{const b=e.target.closest('button[data-name]');if(b)signInStudent(b.dataset.name);};
+}
+function signInStudent(n){
+  AUTH={role:'student',name:n};
+  CURRENT_KID=n;
+  document.getElementById('kidName').textContent=n;
+  document.getElementById('mineBox').innerHTML='';
+  resetKid();
+  showView('kid');
+}
+function enterTeacher(){
+  const el=document.getElementById('pin');
+  if(el.value!==TEACHER_PIN){
+    document.getElementById('pinErr').hidden=false;el.value='';el.focus();return;
+  }
+  AUTH={role:'teacher',name:'Mrs Patel'};
+  el.value='';
+  closeDetail();
+  showView('teacher');
+  startPolling();
+}
+function signOut(){
+  AUTH=null;
+  stopPolling();
+  closeDetail();
+  document.getElementById('mineBox').innerHTML='';
+  document.getElementById('escBox').innerHTML='';
+  resetKid();
+  backToRoles();
+  showView('login');
 }
 function openHow(){document.getElementById('howOverlay').classList.add('show')}
 function closeHow(){document.getElementById('howOverlay').classList.remove('show')}
@@ -512,6 +898,10 @@ function submitCheckin(){
   today.why=pickedWhy||null;
   recompute();
   LAST_CHECKIN=CURRENT_KID;
+  /* fire-and-forget: the child's screen must never wait on the network, and a
+     failed post leaves their local view correct either way */
+  if(LIVE) api('/api/checkin',{name:CURRENT_KID,score:picked.score,why:pickedWhy||null})
+    .catch(()=>{});
 
   document.getElementById('kidMain').style.display='none';
   document.getElementById('thanksBox').classList.add('show');
@@ -520,17 +910,10 @@ function submitCheckin(){
   document.getElementById('thanksMsg').textContent=picked.score<=2
     ?`Thanks for being honest, ${CURRENT_KID}. Your teacher knows, and that's a brave thing to share.`
     :"However you're feeling, we're glad you're here today.";
-  const f=FLAGS[CURRENT_KID];
-  const note=document.getElementById('sentNote');
-  note.innerHTML=f
-    ? `Sent. Rule <b>${f.rule}</b> fired on the teacher's dashboard — switch to the teacher view to see it.`
-    : `Sent. No rule fired — switch to the teacher view to see ${CURRENT_KID}'s tile update.`;
-}
-/* the demo picker — lets the presenter check in as any child in the class */
-function switchKid(){
-  CURRENT_KID=document.getElementById('whoSel').value;
-  document.getElementById('kidName').textContent=CURRENT_KID;
-  resetKid();
+  /* Deliberately says nothing about rules or signals. A child is never told
+     that an algorithm flagged them — that is information for the adults around
+     them, not a label to hand back to the child. */
+  document.getElementById('sentNote').textContent='Sent to your teacher.';
 }
 function resetKid(){
   picked=pickedWhy=null;
@@ -542,13 +925,46 @@ function resetKid(){
   [...wChips.children].forEach(c=>c.classList.remove('sel'));
 }
 
+/* ---------- THE CHILD'S OWN VIEW ----------
+   The same promise the transparency card makes, kept. A child sees their own
+   check-ins and nothing else: no rule, no flag, no baseline, no comparison.
+   Being flagged is information for the adults around a child, not a label to
+   hand the child about themselves. */
+function showMine(){
+  const box=document.getElementById('mineBox');
+  if(box.innerHTML){box.innerHTML='';return;}
+  const h=HISTORY[CURRENT_KID].slice(-10);
+  const answered=h.filter(d=>d.score!=null);
+  const best=answered.filter(d=>d.score>=4).length;
+  let quiet=0; for(let i=h.length-1;i>=0&&h[i].score==null;i--) quiet++;
+  box.innerHTML=`<div class="mine">
+    <h5>Your last ${h.length} school days, ${CURRENT_KID}</h5>
+    <div class="sub2">This is everything Sunny keeps about you. Nothing is hidden from you.</div>
+    <div class="days">${h.map(d=>
+      `<div class="d">${faceSVG(d.score,30)}<span>${DAYNAME[d.dow]}</span></div>`).join('')}</div>
+    <div class="msg">${
+      answered.length===0
+        ? "You haven't checked in for a while. That's allowed — there's no rule that says you have to."
+        : quiet>=3
+        ? "You haven't picked a face for a few days. That's completely okay. There's one waiting whenever you feel like it."
+        : best>=answered.length-1
+        ? "Lots of good days lately. Nice."
+        : best===0
+        ? "That's been a hard stretch. It's okay for a week to look like this, and your teacher knows so they can help."
+        : "Some good days and some harder ones — which is what most weeks look like for most people."
+    }</div>
+  </div>`;
+}
+
 /* ---------- TEACHER DATA ----------
    30 school days of history per child. Generated deterministically so every
    machine shows the identical demo, then fed to the real rule engine below —
    nothing about which children get flagged is written by hand. */
 const NAMES=['Mia','Liam','Aroha','Noah','Ella','Kai','Sophie','Jack','Ruby','Tane','Olivia','Max',
 'Hana','Leo','Grace','Finn','Isla','Cody','Maia','Ben','Zoe','Nikau','Lily','Sam'];
+const SEEDED=[...NAMES];   // the roster live guests get appended to
 const DAYNAME=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const FULLDAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 /* the last 30 school days, ending today */
 const TODAY=new Date(2026,6,27);            // Monday 27 July 2026
@@ -584,6 +1000,8 @@ NAMES.forEach((name,idx)=>{
       case 'Maia':  score = day.dow===1?2 : (r<0.3?4:5); break;
       /* median 4, yesterday already 2 below, today still normal */
       case 'Noah':  score = t===28?2 : t===29?4 : (r<0.62?4:5); break;
+      /* checked in happily for weeks, then simply stopped. null = no check-in */
+      case 'Isla':  score = t>=26?null : (r<0.4?4:5); break;
       default:      score = (t%7===3)?3 : (r<0.4?4:5);
     }
     return {...day,score};
@@ -594,16 +1012,22 @@ NAMES.forEach((name,idx)=>{
    Three fixed arithmetic rules. Deterministic, auditable, no AI. Every rule
    measures distance from THIS child's own median — never from the class. */
 function median(nums){
-  const a=[...nums].sort((x,y)=>x-y),m=a.length>>1;
+  const a=nums.filter(v=>v!=null).sort((x,y)=>x-y),m=a.length>>1;
+  if(!a.length) return null;
   return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
 }
+/* A missing day is missing data, not a low score. R1-R3 therefore refuse to
+   fire across a gap — you cannot claim a 3-day drift through a day the child
+   never answered. R4 below is what covers the absence itself. */
+const answered=d=>d.score!=null;
 const RULES=[
   {id:'R1',name:'Sudden change',level:'high',span:2,gap:2,
    text:"Fires when a child's check-in sits ≥2 steps below their OWN 30-day median for 2 or more consecutive days.",
    short:(n,d)=>`${d.span} consecutive days ≥2 steps below their own 30-day median.`,
    test(h,med){
      const last=h.slice(-this.span);
-     return last.length===this.span && last.every(d=>med-d.score>=this.gap);
+     return last.length===this.span && last.every(answered)
+       && last.every(d=>med-d.score>=this.gap);
    },
    calc(h,med,name){
      const last=h.slice(-this.span);
@@ -616,7 +1040,8 @@ const RULES=[
    short:(n,d)=>`${d.span} consecutive days ≥1.5 steps below their own 30-day median.`,
    test(h,med){
      const last=h.slice(-this.span);
-     return last.length===this.span && last.every(d=>med-d.score>=this.gap);
+     return last.length===this.span && last.every(answered)
+       && last.every(d=>med-d.score>=this.gap);
    },
    calc(h,med,name){
      const last=h.slice(-this.span);
@@ -626,18 +1051,39 @@ const RULES=[
    }},
   {id:'R3',name:'Repeating cycle',level:'watch',gap:1.5,need:4,of:6,
    text:"Fires when the same weekday falls ≥1.5 steps below a child's OWN median in 4 or more of the last 6 occurrences.",
-   short:(n,d)=>`${d.hits} of their last ${d.of} ${d.dayName}s sit ≥1.5 steps below their own median.`,
-   sameDay(h){const dow=h[h.length-1].dow;return h.filter(d=>d.dow===dow).slice(-this.of)},
+   short:(n,d)=>d.hits===d.of
+     ? `Every one of their last ${d.of} ${d.dayName}s sits ≥1.5 steps below their own median.`
+     : `${d.hits} of their last ${d.of} ${d.dayName}s sit ≥1.5 steps below their own median.`,
+   sameDay(h){const dow=h[h.length-1].dow;return h.filter(d=>d.dow===dow&&answered(d)).slice(-this.of)},
    test(h,med){
      const same=this.sameDay(h);
      return same.length===this.of && same.filter(d=>med-d.score>=this.gap).length>=this.need;
    },
    calc(h,med,name){
-     const same=this.sameDay(h),dn=DAYNAME[h[h.length-1].dow];
+     const same=this.sameDay(h),dn=FULLDAY[h[h.length-1].dow];
      const hits=same.filter(d=>med-d.score>=this.gap).length;
      return `${name}'s 30-day median = ${med}\n`
        +`${dn}s (last ${this.of}): ${same.map(d=>d.score).join(', ')}\n`
        +`${hits} of ${this.of} ${dn}s ≥${this.gap.toFixed(1)} below → RULE FIRED`;
+   }},
+  /* Silence is the one signal a mood scale cannot express. A child who simply
+     stops answering produces no low scores at all — so without this rule they
+     become invisible at exactly the point you most want to see them. */
+  {id:'R4',name:'Stopped checking in',level:'high',span:3,
+   text:"Fires when a child who normally checks in has missed 3 or more school days in a row.",
+   short:(n,d)=>`No check-in for ${d.missed} school days, after checking in regularly.`,
+   missed(h){let c=0;for(let i=h.length-1;i>=0&&!answered(h[i]);i--)c++;return c},
+   test(h){
+     const missed=this.missed(h);
+     return missed>=this.span && h.slice(0,h.length-missed).some(answered);
+   },
+   calc(h,med,name){
+     const missed=this.missed(h),gapDays=h.slice(-missed);
+     const before=h.slice(0,h.length-missed).filter(answered).slice(-3);
+     return `${name} answered ${h.filter(answered).length} of the last ${h.length} school days\n`
+       +`Last 3 check-ins: ${before.map(d=>`${DAYNAME[d.dow]}=${d.score}`).join('  ')}\n`
+       +`Then: ${gapDays.map(d=>DAYNAME[d.dow]).join(', ')} — no answer\n`
+       +`${missed} consecutive school days missed → RULE FIRED`;
    }}
 ];
 
@@ -651,7 +1097,10 @@ const LIMITS={
       next:"No urgency. Next time you're one-to-one anyway, leave a door open — “how's your week been?” — and let them fill the silence."},
   R3:{notMean:n=>`A weekday pattern says something about that weekday, not about ${n}. Sunny is pointing at a timetable, not at a child.`,
       alts:"a subject they dread that day · a swimming lesson · the transition back after a weekend · an early bus · a weekend routine they'd rather not leave",
-      next:"Look at what that morning actually involves before speaking to them — the answer may be in the timetable, and fixable without a conversation at all."}
+      next:"Look at what that morning actually involves before speaking to them — the answer may be in the timetable, and fixable without a conversation at all."},
+  R4:{notMean:n=>`Sunny knows only that no answer arrived. It does not know whether ${n} is upset, absent, bored of the app, or was simply never handed a device.`,
+      alts:"off sick · a broken tablet · a class that skipped the routine · quietly opting out, which is allowed · not wanting to answer honestly and choosing silence instead",
+      next:"Check the roll first — most silences are absence. If they have been in class and still not answering, that is worth a gentle word in person."}
 };
 
 /* ---------- SUPPORT PLANS ----------
@@ -692,7 +1141,7 @@ function renderPlan(n){
   if(!pl){
     box.innerHTML=`<div class="plan-empty">
       <p>No plan yet for ${n}. Nobody who knows them has written one down.</p>
-      <button class="act" onclick="editPlan('${n}')">+ Add a plan for ${n}</button></div>`;
+      <button class="act" onclick="editPlan(DETAIL_NAME)">+ Add a plan for ${htm(n)}</button></div>`;
     return;
   }
   box.innerHTML=`<div class="plan">
@@ -701,7 +1150,7 @@ function renderPlan(n){
     <dl>${PLAN_FIELDS.map(([k,label,cls])=>pl[k]
       ? `<dt class="${cls||''}">${label}</dt><dd>${pl[k]}</dd>` : '').join('')}</dl>
     <div class="planact">
-      <button class="act" onclick="editPlan('${n}')">Edit this plan</button>
+      <button class="act" onclick="editPlan(DETAIL_NAME)">Edit this plan</button>
     </div></div>`;
 }
 
@@ -713,8 +1162,8 @@ function editPlan(n){
       `<label class="${cls||''}">${label}</label>
        <textarea id="pf_${k}" placeholder="Leave blank if you're not sure">${pl[k]||''}</textarea>`).join('')}
     <div class="planact">
-      <button class="act" onclick="savePlan('${n}')">Save plan</button>
-      <button class="act" onclick="renderPlan('${n}')">Cancel</button>
+      <button class="act" onclick="savePlan(DETAIL_NAME)">Save plan</button>
+      <button class="act" onclick="renderPlan(DETAIL_NAME)">Cancel</button>
     </div>
     <div style="font-size:.78rem;color:var(--muted);margin-top:10px">
       In a real deployment a parent fills this in from their own simple form —
@@ -745,8 +1194,9 @@ function evaluateAll(){
     for(const r of RULES){
       if(r.test(h,med)){
         const dow=h[h.length-1].dow;
-        const detail={span:r.span,of:r.of,dayName:DAYNAME[dow],
-          hits:r.id==='R3'?r.sameDay(h).filter(d=>med-d.score>=r.gap).length:0};
+        const detail={span:r.span,of:r.of,dayName:FULLDAY[dow],
+          hits:r.id==='R3'?r.sameDay(h).filter(d=>med-d.score>=r.gap).length:0,
+          missed:r.id==='R4'?r.missed(h):0};
         out[name]={level:r.level,rule:r.id,ruleName:r.name,ruleText:r.text,
           calc:r.calc(h,med,name),short:r.short(name,detail),
           notMean:LIMITS[r.id].notMean(name),alts:LIMITS[r.id].alts,next:LIMITS[r.id].next};
@@ -774,8 +1224,8 @@ function renderTeacher(){
   stuWrap.innerHTML='';
   NAMES.forEach(n=>{
     const d=document.createElement('div');
-    d.className='stu'+(FLAGS[n]?' flag':'');d.dataset.name=n;
-    d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${n}</div>`;
+    d.className='stu'+(FLAGS[n]?' flag':'')+(GUESTS.includes(n)?' guest':'');d.dataset.name=n;
+    d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${htm(n)}</div>`;
     d.onclick=()=>openDetail(n);
     stuWrap.appendChild(d);
   });
@@ -787,18 +1237,19 @@ function renderTeacher(){
   flagged.forEach(n=>{
     const f=FLAGS[n];
     const s=document.createElement('div');s.className='signal'+(f.level==='high'?' high':'');
-    s.innerHTML=`<div class="row"><span class="who">${n}</span><span class="tag">${f.ruleName}</span></div>
-      <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n].toFixed(1)}</div>`;
+    s.innerHTML=`<div class="row"><span class="who">${htm(n)}</span><span class="tag">${f.ruleName}</span></div>
+      <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n]==null?'—':BASE[n].toFixed(1)}</div>`;
     s.onclick=()=>openDetail(n);
     sigList.appendChild(s);
   });
   document.getElementById('calmNote').style.display=flagged.length?'none':'block';
 
-  const avg=NAMES.reduce((a,n)=>a+DATA[n][4],0)/NAMES.length;
+  const today=NAMES.map(n=>DATA[n][4]).filter(v=>v!=null);
+  const avg=today.reduce((a,v)=>a+v,0)/(today.length||1);
   document.getElementById('classMood').textContent=
     avg>=4.4?'Mostly great':avg>=3.7?'Mostly good':avg>=3?'A flatter day':'A hard day';
   document.getElementById('checkedIn').textContent=
-    `Monday 27 July · ${NAMES.length} of ${NAMES.length} checked in`;
+    `Monday 27 July · ${today.length} of ${NAMES.length} checked in`;
 }
 
 /* Recomputes every rule from scratch, then repaints. */
@@ -809,8 +1260,8 @@ function recompute(){ FLAGS=evaluateAll();
 
 renderTeacher();
 
-document.getElementById('whoSel').innerHTML=
-  NAMES.map(n=>`<option${n===CURRENT_KID?' selected':''}>${n}</option>`).join('');
+document.getElementById('roleKidFace').innerHTML=faceSVG(5,62);
+detectLive();
 
 /* when the teacher view opens right after a check-in, show which tile moved */
 const _showView=showView;
@@ -825,21 +1276,31 @@ showView=function(v){
 };
 
 function openDetail(n){
+  DETAIL_NAME=n;
   document.querySelectorAll('.stu').forEach(x=>x.classList.toggle('active',x.dataset.name===n));
   const p=document.getElementById('detailPanel');p.classList.add('show');
-  const f=FLAGS[n],b=BASE[n].toFixed(1);
+  const f=FLAGS[n],b=BASE[n]==null?'—':BASE[n].toFixed(1);
   document.getElementById('dName').textContent=n;
   document.getElementById('dSub').textContent=f
     ?`Signal raised by rule ${f.rule} · ${f.ruleName}`
     :'No signal — shown for transparency. Any child can be opened at any time.';
 
   document.getElementById('weekChart').innerHTML=DATA[n].map((s,i)=>
-    `<div class="day"><div class="de">${faceSVG(s,22)}</div><div class="bar"><div class="fill" style="height:${s*13}px;background:${sColor(s)}"></div></div><div class="dl">${DAYS[i]}</div></div>`).join('');
+    `<div class="day"><div class="de">${faceSVG(s,22)}</div><div class="bar">${s==null
+       ? '<div class="nofill">no answer</div>'
+       : `<div class="fill" style="height:${s*13}px;background:${sColor(s)}"></div>`}</div><div class="dl">${DAYS[i]}</div></div>`).join('');
   document.getElementById('dBaseline').innerHTML=`<b>${n}'s own 30-day baseline: ${b}</b> — every rule below measures distance from this line, not from the class.`;
   document.getElementById('dTrail').textContent=
-    DATA[n].map((s,i)=>`${DAYS[i]}=${s}`).join('  ')+`   |  median=${b}  |  Δ today=${(DATA[n][4]-b).toFixed(1)}`;
+    DATA[n].map((s,i)=>`${DAYS[i]}=${s==null?'--':s}`).join('  ')
+    +`   |  median=${b}  |  `
+    +(DATA[n][4]==null||BASE[n]==null?'no check-in today':`Δ today=${(DATA[n][4]-BASE[n]).toFixed(1)}`);
 
   renderPlan(n);
+  const eb=document.getElementById('escBox');
+  const raised=ESCALATIONS.filter(e=>e.name===n);
+  eb.innerHTML=raised.length
+    ? `<div class="esc-done"><b>✓ Already raised to ${WELLBEING_LEAD}</b> — ${raised[raised.length-1].at}.</div>`
+    : '';
   document.getElementById('dActions').style.display=f?'flex':'none';
   if(f){
     document.getElementById('dRuleId').textContent=`${f.rule} · ${f.ruleName}`;
@@ -850,8 +1311,10 @@ function openDetail(n){
     document.getElementById('dNext').textContent=f.next;
   }else{
     document.getElementById('dRuleId').textContent='No rule fired';
-    document.getElementById('dRuleText').textContent=`All three rules were evaluated against ${n}'s own baseline and none triggered.`;
-    document.getElementById('dRuleCalc').innerHTML='R1 sudden change &nbsp;→ not met<br>R2 sustained drift &nbsp;→ not met<br>R3 repeating cycle → not met';
+    document.getElementById('dRuleText').textContent=
+      `All ${RULES.length} rules were evaluated against ${n}'s own baseline and none triggered.`;
+    document.getElementById('dRuleCalc').innerHTML=
+      RULES.map(r=>`${r.id} ${r.name.toLowerCase()} → not met`).join('<br>');
     document.getElementById('dNotMean').textContent=`No signal does not mean ${n} is fine. A child can be struggling and still tap “great” every day. Sunny is one small input, never a substitute for knowing your class.`;
     document.getElementById('dAlts').textContent='masking · not trusting the app · having a genuinely good week';
     document.getElementById('dNext').textContent='Nothing suggested. Sunny stays quiet unless a rule fires.';
@@ -860,6 +1323,79 @@ function openDetail(n){
   document.querySelectorAll('.act').forEach(a=>a.classList.remove('done'));
   p.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
+/* ---------- ESCALATION ----------
+   The one path by which anything leaves the classroom. It is manual, it shows
+   the teacher exactly what will be sent before they send it, and it carries
+   numbers and human notes — never an interpretation of the child. */
+const ESCALATIONS=[];
+const WELLBEING_LEAD='Mrs Patel (wellbeing lead)';
+
+function escalationPackage(n){
+  const f=FLAGS[n], pl=PLANS[n];
+  return [
+    `child:        ${n}, Room 6`,
+    `raised_by:    You (class teacher)`,
+    `raised_at:    Mon 27 Jul 2026, 9:14am`,
+    `rule:         ${f?f.rule+' '+f.ruleName:'none — raised manually'}`,
+    `own_median:   ${BASE[n]==null?'—':BASE[n].toFixed(1)}`,
+    `last_5:       ${DATA[n].map(v=>v==null?'--':v).join(', ')}`,
+    `support_plan: ${pl?'attached — written by '+pl.author:'none on file'}`,
+  ].join('\n');
+}
+
+function escalate(n){
+  const box=document.getElementById('escBox');
+  box.innerHTML=`<div class="esc-panel">
+    <h4>Raise ${n} to ${WELLBEING_LEAD}?</h4>
+    <div class="lead">Nothing has been sent yet. This is exactly what they would receive.</div>
+    <div class="esc-cols">
+      <div class="esc-col send">
+        <h5>What gets sent</h5>
+        <ul>
+          <li>The rule that fired, and the arithmetic behind it</li>
+          <li>${n}'s own median and last five check-ins</li>
+          <li>${PLANS[n]?"Their support plan, so the lead knows what helps":"A note that no support plan exists yet"}</li>
+          <li>Anything you write below, in your own words</li>
+        </ul>
+        <div class="pkg">${escalationPackage(n)}</div>
+      </div>
+      <div class="esc-col hold">
+        <h5>What never gets sent</h5>
+        <ul>
+          <li>Any diagnosis, label or clinical language</li>
+          <li>Any claim about how ${n} feels, or why</li>
+          <li>The AI's suggested wording — that was for you, not for a file</li>
+          <li>Comparison to any other child in the class</li>
+        </ul>
+      </div>
+    </div>
+    <div class="esc-note">
+      <label>Your note to ${WELLBEING_LEAD} — the part only you can write</label>
+      <textarea id="escNote" placeholder="What you have seen in class, in your own words. This is the most useful part of the whole record."></textarea>
+    </div>
+    <div class="planact" style="margin-top:13px">
+      <button class="act esc" onclick="confirmEscalate(DETAIL_NAME)">Send to ${WELLBEING_LEAD.split(' ')[0]} ${WELLBEING_LEAD.split(' ')[1]}</button>
+      <button class="act" onclick="document.getElementById('escBox').innerHTML=''">Cancel</button>
+    </div>
+  </div>`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function confirmEscalate(n){
+  const note=(document.getElementById('escNote')||{}).value||'';
+  const rec={name:n,rule:FLAGS[n]&&FLAGS[n].rule,note:note.trim(),at:'Mon 27 Jul 2026, 9:14am'};
+  ESCALATIONS.push(rec);
+  document.getElementById('escBox').innerHTML=`<div class="esc-done">
+    <b>✓ Raised to ${WELLBEING_LEAD}.</b> ${n} stays on your board — raising is not handing over.
+    <div class="trail">audit trail entry
+${escalationPackage(n)}
+teacher_note: ${rec.note?JSON.stringify(rec.note):'(none written)'}</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-top:9px">
+      ${n} can ask to see this record. Nothing about a child is kept where the child may not look.</div>
+  </div>`;
+  renderTeacher();
+}
+
 /* The teacher's judgement overrides the rule. Dismissals are kept so the
    false-positive rate can be measured honestly rather than guessed at. */
 const DISMISSED=[];
