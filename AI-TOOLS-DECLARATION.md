@@ -1,6 +1,6 @@
 # AI & Tools Declaration
 
-**Team:** [TEAM NAME]
+**Team:** Sunny Team
 **Project:** Sunny — Classroom Mood Check-in
 **Domain:** Education Technology
 **ICL Sustainable Business Innovation & AI Hackathon 2026**
