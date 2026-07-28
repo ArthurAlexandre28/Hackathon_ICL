@@ -109,6 +109,24 @@ Two deliberate choices: escalation **never requires a rule to have fired**, beca
 teacher does not need an algorithm's permission to raise a concern; and the resulting
 audit-trail entry is something **the child themselves can ask to see**.
 
+### Two roles, two surfaces
+
+The app opens on a sign-in screen, because the teacher's screen holds 24 other children's
+check-ins and a student device must never reach it.
+
+**Students don't get passwords.** Class code, then tap your name. A 20-second check-in
+cannot start with a password an 8-year-old has to remember, and schools rarely issue young
+children credentials they can manage — tapping your name on a shared classroom device is
+how this age group actually signs in. **Teachers get a real PIN** (demo: `2026`).
+
+The sign-in list shows names and initials only — never anyone's check-in face. A child
+choosing their name must not learn how 23 classmates feel today.
+
+> **This sign-in secures nothing.** It runs entirely in the browser with no server to check
+> anything against, and the app says so on screen. It is there to show the two roles are
+> separate surfaces over different data, which is a real product requirement. Real
+> deployment would use the school's existing single sign-on.
+
 ### The child can see their own data
 
 The kid view has a *"See my check-ins"* button showing that child's own last ten days —
@@ -127,7 +145,7 @@ not mean a child is fine.
 
 | File | What it is |
 |---|---|
-| `index.html` | The prototype — check-in flow, rule engine, support plans, escalation. Open in any browser; no install, no server, no accounts. |
+| `index.html` | The whole prototype — sign-in, check-in flow, rule engine, support plans, escalation. Open in any browser; no install, no server. |
 | `Sunny-Pitch-Deck.pptx` | 12-slide pitch deck, with timed speaker notes and prepared Q&A on every slide. |
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
 | `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
@@ -145,25 +163,26 @@ npm install pptxgenjs sharp && node deck-build.js && python3 dedupe.py Sunny-Pit
 
 ## Demo script (3 minutes)
 
-1. **Kid view** — tap "Not good", tap a reason, send. Note the warm response and the
-   *"What happens to my check-in?"* panel — the child can see the rules too.
-2. **Teacher view** — show the class grid. Mostly bright, four soft signals. Point at the
-   note under the grid: *an "okay" day is not a signal.*
-3. **Check in as Noah** ("Not good") — then switch to the teacher view and watch a new
-   signal appear that did not exist a moment ago. This is the answer to "is it hardcoded?"
-   Bonus: check in as **Isla** and watch her R4 signal *clear* — the rules resolve as well
-   as fire.
-4. **Click Maia** — rule R3 finds the Monday pattern; her mum's plan, one step above the
+1. **Sign in as a student** — class code `ROOM6`, then tap **Noah**. Point out that the
+   list shows names, not faces, and that nobody typed a password.
+2. **Check in** — tap "Not good", tap a reason, send. Note the *"What happens to my
+   check-in?"* panel and **See my check-ins**: the child sees their own data and no rules.
+3. **Sign out, sign in as the teacher** (PIN `2026`) — Noah's signal is now on the board.
+   It did not exist ninety seconds ago, and a different person on a different screen
+   produced it. This is the answer to "is it hardcoded?"
+4. **Show the class grid** — four other soft signals. Point at the note under the grid:
+   *an "okay" day is not a signal.*
+5. **Click Maia** — rule R3 finds the Monday pattern; her mum's plan, one step above the
    AI, already says swimming is Monday first period. The machine found it, a human
    explained it.
-5. **Click Cody** — this is the moment. Bright all week, then a two-step drop today.
+6. **Click Cody** — this is the moment. Bright all week, then a two-step drop today.
    Walk the four steps: the data → the rule that fired → **what this does not mean** → the
    AI's suggested wording.
-6. **Open "How Sunny works"**  — the collect / detect / word / decide pipeline, with
+7. **Open "How Sunny works"** — the collect / detect / word / decide pipeline, with
    detection marked **NO AI**.
-7. **Raise Isla to the wellbeing lead** — show the two columns: what gets sent, and what
+8. **Raise Isla to the wellbeing lead** — show the two columns: what gets sent, and what
    never does. This is the slide judges will remember on safeguarding.
-8. **Land the point** — Sunny didn't diagnose Cody, and didn't decide anything. It did
+9. **Land the point** — Sunny didn't diagnose Cody, and didn't decide anything. It did
    arithmetic on five numbers, showed its working, and made sure a caring adult noticed.
 
 ### Expect these questions
@@ -199,7 +218,7 @@ This is the core of the pitch, not a disclaimer bolted on:
 
 Level 1 prototype — front-end only, **simulated history**, no backend or live model calls.
 The rule engine, the check-in flow, the support plans and the escalation trail are real
-and run in the browser;
+and run in the browser; the sign-in is role separation, not security;
 what is simulated is the 30 days of history they operate on, and the AI's suggested
 wording is a per-rule template rather than a live API call.
 
