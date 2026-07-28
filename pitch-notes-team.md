@@ -27,7 +27,7 @@ Four boxes, left to right. Three say **No AI**. One says **AI**.
 > "Detection is arithmetic. The AI only writes the wording. We never mix the two.
 >
 > Step one is the data — this child's last thirty school days.
-> Step two is the detection — four fixed rules. No AI at all.
+> Step two is the detection — five fixed rules. No AI at all.
 > Step three is the only place AI appears, and all it does is turn a fired rule into a
 > sentence a teacher can read.
 > Step four, the teacher decides. Always."
@@ -45,11 +45,14 @@ It doesn't. It writes one sentence from a rule name and five numbers.
 
 ## Slide 7 — "Four rules, printed in full"
 
-Don't read all four aloud. Gesture at them and make the point about *why they fit on a slide*.
+> **Note:** the deck slide says four; the app now has five. If a judge counts, the fifth
+> (R5) is a data-quality check, not a wellbeing signal — Arthur can explain it.
+
+Don't read them all aloud. Gesture at them and make the point about *why they fit on a slide*.
 
 **What to say:**
 
-> "Four rules. That's all of them — there is no fifth one hidden in a model somewhere.
+> "These rules. That's all of them — there is nothing hidden in a model somewhere.
 > A parent could check this maths by hand.
 >
 > [point left box] Every rule compares a child only to themselves. A child who checks in
@@ -59,7 +62,8 @@ Don't read all four aloud. Gesture at them and make the point about *why they fi
 >
 > [point right box] And this one we're proud of. A mood scale can't say 'I have stopped
 > answering'. A child who quietly disengages produces no low scores at all — so without
-> that fourth rule, they'd be invisible at exactly the moment you most want to see them."
+> the 'stopped checking in' rule, they'd be invisible at exactly the moment you most want
+> to see them."
 
 **If you only get one extra sentence in Q&A, use the "compared only to themselves" one.**
 
@@ -70,7 +74,7 @@ Don't read all four aloud. Gesture at them and make the point about *why they fi
 1. **Children tap a face, not words.** No password, no vocabulary, no metaphor to decode.
    Twenty seconds.
 2. **Every child is compared only to their own normal**, never to classmates.
-3. **Four rules do the detecting. AI only phrases the suggestion for the teacher.**
+3. **The rules do the detecting. AI only phrases the suggestion for the teacher.**
 4. **A parent or teacher can write a support plan** — what helps this child — and it appears
    *above* the AI's suggestion. The people who know the child outrank the machine.
 5. **Nothing happens automatically.** Every signal ends with a human deciding. Sunny never
