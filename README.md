@@ -166,7 +166,7 @@ audit-trail entry is something **the child themselves can ask to see**.
 
 Served by `server.js`, the class is shared across devices: visitors join on their own
 phones and appear on the projected teacher screen within about 1.5 seconds, tagged **new**.
-They join as *extra* students, so the seeded children keep their patterns and all four
+They join as *extra* students, so the seeded children keep their patterns and all five
 rules still demonstrate.
 
 The server is a dumb store. **The rule engine stays in the browser** — the server never

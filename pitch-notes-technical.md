@@ -14,16 +14,19 @@ For Q&A. You will not need most of this; you need to be *unbothered* by all of i
 | Poll interval | Teacher screen refreshes every 1.5 seconds |
 | Class in the demo | 24 seeded children + however many visitors join |
 
-## The four rules, exactly
+## The five rules, exactly
 
 - **R1 · Sudden change** — ≥2 steps below their own median, 2 consecutive days.
 - **R2 · Sustained drift** — ≥1.5 steps below their own median, 3 consecutive days.
 - **R3 · Repeating cycle** — same weekday ≥1.5 below their own median, in ≥4 of the last 6 occurrences.
 - **R4 · Stopped checking in** — ≥3 consecutive school days missed, by a child who was answering before.
+- **R5 · May not be reading** — same slot tapped in 4 of the last 5 check-ins, producing ≥3
+  different scores. **Not a wellbeing signal** — a data-quality note.
 
 **Why the thresholds differ:** R1 catches a fast drop, so it demands a bigger gap over a
 shorter window. R2 catches a slow slide, so a smaller gap over longer. R3 needs repetition
-before it will claim a pattern.
+before it will claim a pattern. R5 doesn't measure mood at all — it measures whether the
+answers can be trusted.
 
 **Worked example — Cody.** Median 4. Thursday 2 (2.0 below), Friday 1 (3.0 below). Two
 consecutive days at or beyond 2.0 → R1 fires. The panel prints that arithmetic on screen.

@@ -1,6 +1,7 @@
 # AI & Tools Declaration
 
-**Team:** [TEAM NAME]
+**Team:** Team Sunny
+**Members:** Arthur Chaves (300006351) · Ayra Inciong (111580) · Ben Harley (111816)
 **Project:** Sunny — Classroom Mood Check-in
 **Domain:** Education Technology
 **ICL Sustainable Business Innovation & AI Hackathon 2026**
@@ -107,5 +108,10 @@ Everything submitted is our team's own original work. Where generative AI contri
 did so under our direction and with our review, and its use is described above. All
 open-source components are listed with their licences.
 
-**Signed:** [TEAM MEMBER NAMES]
+**Signed:**
+
+- Arthur Chaves — 300006351
+- Ayra Inciong — 111580
+- Ben Harley — 111816
+
 **Date:** 29 July 2026

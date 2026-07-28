@@ -65,7 +65,7 @@ slide before "Meet Sunny".
    twice before wiping.
 
 Judges join as *extra* students, so Cody, Aroha, Maia and Isla keep their seeded
-patterns and all four rules still demonstrate.
+patterns and all five rules still demonstrate.
 
 ## Rehearse these three things
 
