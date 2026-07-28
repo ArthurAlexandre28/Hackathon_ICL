@@ -218,6 +218,7 @@ not mean a child is fine.
 | `AI-TOOLS-DECLARATION.md` | Mandatory submission item 4. |
 | `TEAM-SUMMARY.md` | Mandatory submission item 5 (149 words). |
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
+| [`FEATURE-GUIDE.md`](FEATURE-GUIDE.md) | **Every screen, screenshotted, with what it does and why.** Start here to see the app without running it. |
 | `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
 | `dedupe.py` | Post-build step: pptxgenjs writes one media part per image *use*, so this collapses them (889K → 367K). |
 | `server.js` | Optional live-demo server — zero dependencies, `node server.js`. |
