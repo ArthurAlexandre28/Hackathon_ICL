@@ -253,6 +253,20 @@
     .m-btn .lbl{font-size:.6rem}
   }
 
+  .worry-lead{font-size:.85rem;color:var(--muted);line-height:1.5;margin-bottom:13px}
+  .worry-pick{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}
+  .worry-pick select{width:100%;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--ink);
+    background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:11px}
+  .worry-pick select:focus{outline:none;border-color:var(--brand)}
+  .worry-done{margin-top:13px;border:1px solid var(--good);border-radius:12px;padding:13px 15px;
+    font-size:.87rem;background:color-mix(in srgb,var(--good) 8%,transparent)}
+  .peer{border:1px solid color-mix(in srgb,var(--brand) 45%,var(--line));
+    background:color-mix(in srgb,var(--brand) 6%,transparent);border-radius:14px;padding:15px;margin-top:12px}
+  .peer .who{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;color:var(--brand);margin-bottom:9px;flex-wrap:wrap}
+  .peer .who .badge{background:var(--brand);color:#fff;font-size:.6rem;padding:2px 7px;border-radius:6px;letter-spacing:.5px}
+  .peer p{font-size:.89rem;line-height:1.5;color:var(--ink)}
+  .peer .caution{font-size:.78rem;color:var(--muted);margin-top:9px;border-top:1px dashed var(--line);padding-top:9px}
+
   /* ---------- TEACHER VIEW ---------- */
   .t-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:18px}
   .t-head h2{font-size:1.45rem}
@@ -349,6 +363,17 @@
   .plan dd{font-size:.89rem;color:var(--ink);line-height:1.5}
   .plan dt.bad{color:var(--alert)}
   .plan .planact{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+  /* notes from home — warmer than the plan, clearly time-limited */
+  .home{margin-top:12px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));
+    background:color-mix(in srgb,var(--accent) 7%,transparent);border-radius:14px;padding:15px}
+  .home .who{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;
+    color:#9a6b18;margin-bottom:9px;flex-wrap:wrap}
+  .home .who .badge{background:var(--accent);color:#3a2a08;font-size:.6rem;padding:2px 7px;border-radius:6px;letter-spacing:.5px}
+  .home .who .by{font-weight:600;color:var(--muted);font-size:.74rem}
+  .home p{font-size:.9rem;line-height:1.55;color:var(--ink)}
+  .home-empty{margin-top:12px;border:1px dashed var(--line);border-radius:12px;padding:13px 15px;
+    font-size:.85rem;color:var(--muted)}
+  .home-empty span{display:block;font-size:.78rem;margin-top:5px;opacity:.85}
   .plan-empty{border:1px dashed var(--line);border-radius:14px;padding:20px;text-align:center}
   .plan-empty p{font-size:.9rem;color:var(--muted);margin-bottom:12px}
   .plan-edit label{display:block;font-size:.78rem;font-weight:800;margin:11px 0 5px}
@@ -546,6 +571,15 @@
         <button class="act" style="margin-top:14px" onclick="showMine()">See my check-ins</button>
         <div id="mineBox"></div>
       </div>
+
+      <div class="card kid-see">
+        <h4>💛 Worried about someone in your class?</h4>
+        <p class="worry-lead">Children often notice before grown-ups do. If someone seems sad
+          or left out, you can quietly tell your teacher. They will not be told who you are
+          by anyone except the teacher, and the person you name is never shown this.</p>
+        <button class="act" onclick="openWorry()">Tell my teacher I'm worried</button>
+        <div id="worryBox"></div>
+      </div>
     </div>
   </div>
 
@@ -629,6 +663,8 @@
       <div class="step">
         <div class="step-n"><b>4</b> What helps <span id="dPlanWho">this child</span> — written by a human</div>
         <div id="planBox"></div>
+        <div id="homeBox"></div>
+        <div id="peerBox"></div>
       </div>
 
       <!-- 5. AI -->
@@ -968,6 +1004,7 @@ function signInStudent(n){
   CURRENT_KID=n;
   document.getElementById('kidName').textContent=n;
   document.getElementById('mineBox').innerHTML='';
+  document.getElementById('worryBox').innerHTML='';
   resetKid();
   showView('kid');
 }
@@ -1301,6 +1338,102 @@ const LIMITS={
       next:"Check the roll first — most silences are absence. If they have been in class and still not answering, that is worth a gentle word in person."}
 };
 
+/* ---------- PEER CONCERN ----------
+   Children notice each other before adults do. This is the quiet way to say so.
+
+   Three deliberate constraints, because a "report a classmate" button is
+   trivially weaponised:
+     - it is never anonymous TO THE TEACHER. A child putting their name to it
+       makes malicious use accountable, and at 8-12 in a classroom this is not
+       whistleblowing, it is telling a grown-up.
+     - the named child is never shown it, and it never appears on their tile or
+       affects any rule. It is a prompt for a human to look, nothing more.
+     - reasons are fixed options. No free text a teacher cannot review, and
+       nothing a child could use to write something cruel.
+   Several independent concerns about the same child is the meaningful case. */
+const PEER_CONCERNS=[
+  {about:'Isla', from:'Grace', reason:'Seems sad or quiet', when:'this morning'},
+  {about:'Isla', from:'Finn',  reason:'Is on their own at lunch', when:'yesterday'},
+];
+const WORRY_REASONS=['Seems sad or quiet','Is on their own at lunch',
+  'Someone is being unkind to them','Something happened at home','I just have a feeling'];
+
+function openWorry(){
+  const box=document.getElementById('worryBox');
+  /* Toggle shut only when the form itself is open. After a thank-you message,
+     tapping again should offer a fresh form — a child may well be worried about
+     more than one person. */
+  if(document.getElementById('worryWho')){box.innerHTML='';return;}
+  const others=NAMES.filter(n=>n!==CURRENT_KID);
+  box.innerHTML=`<div class="worry-pick">
+    <select id="worryWho"><option value="">Who are you worried about?</option>
+      ${others.map(n=>`<option>${htm(n)}</option>`).join('')}</select>
+    <select id="worryWhy"><option value="">What have you noticed?</option>
+      ${WORRY_REASONS.map(r=>`<option>${htm(r)}</option>`).join('')}</select>
+    <button class="joinbtn" onclick="sendWorry()">Tell my teacher</button>
+    <div style="font-size:.76rem;color:var(--muted);margin-top:10px">
+      Your teacher will see that this came from you. Nobody else will, and
+      ${htm(CURRENT_KID)}'s classmate will never be told.</div>
+  </div>`;
+}
+
+function sendWorry(){
+  const who=document.getElementById('worryWho').value;
+  const why=document.getElementById('worryWhy').value;
+  if(!who||!why){ return; }
+  PEER_CONCERNS.push({about:who,from:CURRENT_KID,reason:why,when:'just now'});
+  document.getElementById('worryBox').innerHTML=`<div class="worry-done">
+    <b>Thank you for telling us.</b> Your teacher will have a look.
+    That was a kind thing to do, and ${htm(who)} will not know it came from you.</div>`;
+  if(AUTH&&AUTH.role==='teacher') renderTeacher();
+}
+
+function renderPeerConcerns(n){
+  const box=document.getElementById('peerBox');
+  const mine=PEER_CONCERNS.filter(c=>c.about===n);
+  if(!mine.length){ box.innerHTML=''; return; }
+  box.innerHTML=`<div class="peer">
+    <div class="who"><span class="badge">FROM CLASSMATES</span>
+      ${mine.length} ${mine.length===1?'child has':'children have'} quietly said they are worried about ${htm(n)}</div>
+    ${mine.map(c=>`<p>· <b>${htm(c.from)}</b> — “${htm(c.reason)}” <span style="color:var(--muted)">(${htm(c.when)})</span></p>`).join('')}
+    <div class="caution">This is a prompt to look, not evidence. It does not feed any rule and
+      does not appear on ${htm(n)}'s tile. Children can be mistaken, and they can fall out —
+      ${mine.length>1?'though separate children noticing the same thing is worth a moment.':'treat a single note gently.'}</div>
+  </div>`;
+}
+
+/* ---------- NOTES FROM HOME ----------
+   A support plan is standing knowledge: what helps this child, always.
+   A note from home is the opposite — short-lived context a teacher could not
+   possibly know. "Grandad went into hospital on Sunday." It is the single
+   cheapest way to stop a teacher misreading a signal, and it costs a parent
+   thirty seconds.
+
+   Deliberately: the parent writes it, it expires on its own, and the parent
+   never sees the child's mood data in return. Context flows in; nothing
+   flows back out. */
+const HOME_NOTES={
+  'Aroha':[{text:"Her nan went into hospital on Sunday. She's been quiet at home too. She knows we're worried and she doesn't want to talk about it yet.",
+            by:"Aroha's mum", when:"yesterday", expires:"in 6 days"}],
+  'Cody':[{text:"Rugby was cancelled again on Thursday. It's the third week. He won't say it bothers him but it does.",
+           by:"Cody's dad", when:"4 days ago", expires:"in 3 days"}],
+};
+
+function renderHomeNotes(n){
+  const box=document.getElementById('homeBox');
+  const notes=HOME_NOTES[n];
+  if(!notes||!notes.length){
+    box.innerHTML=`<div class="home-empty">No notes from home this fortnight.
+      <span>Parents can add one in thirty seconds; it disappears on its own after two weeks.</span></div>`;
+    return;
+  }
+  box.innerHTML=notes.map(nt=>`<div class="home">
+      <div class="who"><span class="badge">FROM HOME</span> ${htm(nt.by)}
+        <span class="by">· ${htm(nt.when)} · expires ${htm(nt.expires)}</span></div>
+      <p>${htm(nt.text)}</p>
+    </div>`).join('');
+}
+
 /* ---------- SUPPORT PLANS ----------
    Written by the people who know the child: a parent, a teacher, or both.
    This is the opposite of the rule engine — no inference, no scoring, just
@@ -1510,6 +1643,8 @@ function openDetail(n){
     +(DATA[n][4]==null||BASE[n]==null?'no check-in today':`Δ today=${(DATA[n][4]-BASE[n]).toFixed(1)}`);
 
   renderPlan(n);
+  renderHomeNotes(n);
+  renderPeerConcerns(n);
   const eb=document.getElementById('escBox');
   const raised=ESCALATIONS.filter(e=>e.name===n);
   eb.innerHTML=raised.length
@@ -1554,6 +1689,8 @@ function escalationPackage(n){
     `own_median:   ${BASE[n]==null?'—':BASE[n].toFixed(1)}`,
     `last_5:       ${DATA[n].map(v=>v==null?'--':v).join(', ')}`,
     `support_plan: ${pl?'attached — written by '+pl.author:'none on file'}`,
+    `home_notes:   ${(HOME_NOTES[n]||[]).length?(HOME_NOTES[n].length+' attached, written by a parent'):'none'}`,
+    `classmates:   ${PEER_CONCERNS.filter(c=>c.about===n).length||'none'}`,
   ].join('\n');
 }
 

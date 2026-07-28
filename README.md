@@ -16,11 +16,44 @@ cannot read 26 inner states at once.
 - **Kids** tap a face (Great → Really bad) instead of naming an emotion. Optional one-tap
   "why", including *"I'd rather not say."*
 - **Teachers** get an at-a-glance class grid plus **soft signals** — not alarms.
-- **Four transparent rules** spot patterns over time that a human scanning a grid would miss:
+- **Five transparent rules** spot patterns over time that a human scanning a grid would miss:
   - a sudden drop from a child's *own* normal (Cody — R1)
   - a slow downward drift over several days (Aroha — R2)
   - a repeating weekly cycle (Maia — every Monday — R3)
   - a child who has **stopped checking in at all** (Isla — R4)
+  - a child who is **tapping rather than answering** (Ben — R5)
+
+### The scale is shuffled, and R5 notices when nobody is reading it
+
+The five faces appear in a different order every time. A neighbour cannot read your answer
+from where your thumb lands — which removes one reason a child picks the safe face instead
+of the true one.
+
+Shuffling also makes a new check possible. **R5 fires when a child taps the same slot in 4
+of their last 5 check-ins and those taps produced 3 or more different scores.** Against a
+randomised layout that means they are tapping, not answering.
+
+R5 is deliberately **not a wellbeing signal**. It sorts below the others, uses a different
+colour and tile dot, and the panel opens by saying *this is not a concern about the child*.
+Its guidance is to distrust that child's recent scores until it settles. The product's
+whole claim is that it will not read meaning into a number it cannot stand behind — this
+is the same principle turned on our own input.
+
+### Context from home, and from classmates
+
+Two more human channels, both sitting above the AI's suggestion:
+
+**Notes from home.** A parent can add short-lived context a teacher could not otherwise
+know — *"her nan went into hospital on Sunday"*. It expires on its own after a fortnight.
+Context flows in; the parent never sees the child's mood data in return.
+
+**Concerns from classmates.** Children notice each other before adults do. A child can
+quietly tell the teacher they are worried about someone. Three deliberate constraints,
+because a "report a classmate" button is trivially weaponised: it is **never anonymous to
+the teacher**, so misuse is accountable; the named child is **never shown it** and it
+**never feeds a rule or marks their tile**; and the reasons are fixed options, so there is
+no free text a child could use to write something cruel. Several independent concerns
+about the same child is the meaningful case.
 
 ### Why silence is a rule
 
@@ -57,7 +90,7 @@ core architectural decision:
 | Stage | What happens | AI involved? |
 |---|---|---|
 | 1 · Input | This child's 30 school days of check-ins, and their own median | No |
-| 2 · Detection | Four fixed arithmetic rules | **No** |
+| 2 · Detection | Five fixed arithmetic rules | **No** |
 | 3 · Wording | Turns a fired rule into a plain-English suggestion | Yes |
 | 4 · Decision | The teacher decides | No |
 
@@ -75,7 +108,7 @@ baseline, which is the single biggest risk in a tool like this.
 ### The rules genuinely run
 
 Detection is not a lookup table. `HISTORY` holds 30 school days per child;
-`evaluateAll()` computes each child's own median and runs all four rules against it,
+`evaluateAll()` computes each child's own median and runs all five rules against it,
 and the arithmetic shown in the panel is generated from those numbers rather than typed
 in. Nothing decides which children are flagged except the thresholds.
 
