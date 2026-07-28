@@ -885,6 +885,26 @@ function closeDetail(){
   document.getElementById('detailPanel').classList.remove('show');
   document.querySelectorAll('.stu').forEach(x=>x.classList.remove('active'));
 }
+
+/* ---------- Login Redirect Support ---------- */
+const params = new URLSearchParams(window.location.search);
+
+const role = params.get("role");
+const student = params.get("name");
+
+if (role === "teacher") {
+    showView("teacher");
+}
+
+if (role === "student") {
+    showView("kid");
+
+    if (student) {
+        CURRENT_KID = student;
+        document.getElementById("kidName").textContent = student;
+        document.getElementById("whoSel").value = student;
+    }
+}
 </script>
 </body>
 </html>

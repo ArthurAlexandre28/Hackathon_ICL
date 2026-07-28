@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunny Login</title>
+
+<style>
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --ink:#1f2a37;
+    --muted:#64748b;
+    --line:#e5ecf4;
+    --brand:#5b8def;
+    --brand-soft:#e8f0fe;
+    --m5:#ffc24a;
+    --shadow:0 10px 30px rgba(31,42,55,.08);
+    --radius:22px;
+    font-family:"Segoe UI",sans-serif;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:950px;
+    max-width:95%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:white;
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.left{
+    background:#1d2d50;
+    color:white;
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.sun{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:var(--m5);
+    margin-bottom:20px;
+}
+
+.left h1{
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.left p{
+    color:#d5dbe8;
+    line-height:1.6;
+}
+
+.right{
+    padding:50px;
+}
+
+.right h2{
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:var(--muted);
+    margin-bottom:25px;
+}
+
+.role{
+    display:flex;
+    background:#eef3fb;
+    border-radius:999px;
+    padding:5px;
+    margin-bottom:25px;
+}
+
+.role button{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:12px;
+    cursor:pointer;
+    border-radius:999px;
+    font-weight:bold;
+}
+
+.role button.active{
+    background:var(--brand);
+    color:white;
+}
+
+label{
+    display:block;
+    margin-bottom:15px;
+}
+
+label span{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border-radius:12px;
+    border:1px solid #ddd;
+}
+
+.loginBtn{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:none;
+    border-radius:12px;
+    background:var(--brand);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.note{
+    margin-top:18px;
+    background:var(--brand-soft);
+    padding:12px;
+    border-radius:10px;
+    color:#555;
+    font-size:14px;
+}
+
+.studentOnly{
+    display:none;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="left">
+
+<div>
+
+<div class="sun"></div>
+
+<h1>Sunny</h1>
+
+<p>
+A calm classroom mood check-in platform for students and teachers.
+</p>
+
+</div>
+
+<div>
+🛡 Privacy First<br>
+No diagnoses • No rankings • Teacher decides
+</div>
+
+</div>
+
+<div class="right">
+
+<h2 id="title">Teacher Login</h2>
+
+<p class="subtitle" id="subtitle">
+Access the classroom dashboard.
+</p>
+
+<div class="role">
+
+<button class="active" id="teacherBtn">
+🍎 Teacher
+</button>
+
+<button id="studentBtn">
+🧒 Student
+</button>
+
+</div>
+
+<div id="teacherFields">
+
+<label>
+
+<span>Email</span>
+
+<input id="email"
+type="email"
+value="teacher@sunny.school">
+
+</label>
+
+</div>
+
+<div id="studentFields" class="studentOnly">
+
+<label>
+
+<span>Your Name</span>
+
+<select id="studentName">
+
+<option>Mia</option>
+<option>Noah</option>
+<option>Aroha</option>
+<option>Cody</option>
+<option>Maia</option>
+
+</select>
+
+</label>
+
+</div>
+
+<label>
+
+<span id="passwordLabel">
+Password
+</span>
+
+<input
+id="password"
+type="password">
+
+</label>
+
+<button
+class="loginBtn"
+onclick="login()">
+
+Login
+
+</button>
+
+<div class="note" id="note">
+
+Teacher Password:
+<b>sunny123</b>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let role="teacher";
+
+teacherBtn.onclick=()=>{
+
+role="teacher";
+
+teacherBtn.classList.add("active");
+studentBtn.classList.remove("active");
+
+teacherFields.style.display="block";
+studentFields.style.display="none";
+
+title.innerHTML="Teacher Login";
+
+subtitle.innerHTML="Access the classroom dashboard.";
+
+passwordLabel.innerHTML="Password";
+
+note.innerHTML="Teacher Password: <b>sunny123</b>";
+
+}
+
+studentBtn.onclick=()=>{
+
+role="student";
+
+studentBtn.classList.add("active");
+teacherBtn.classList.remove("active");
+
+teacherFields.style.display="none";
+studentFields.style.display="block";
+
+title.innerHTML="Student Login";
+
+subtitle.innerHTML="Start today's mood check-in.";
+
+passwordLabel.innerHTML="Class Code";
+
+note.innerHTML="Class Code: <b>ROOM6</b>";
+
+}
+
+function login(){
+
+if(role==="teacher"){
+
+if(password.value==="sunny123"){
+
+window.location.href="index.html?role=teacher";
+
+}else{
+
+alert("Incorrect password.");
+
+}
+
+}else{
+
+if(password.value.toUpperCase()==="ROOM6"){
+
+const name=studentName.value;
+
+window.location.href=
+"index.html?role=student&name="+encodeURIComponent(name);
+
+}else{
+
+alert("Incorrect classroom code.");
+
+}
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
