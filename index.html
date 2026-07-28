@@ -186,6 +186,47 @@
   .mine .msg{margin-top:14px;font-size:.85rem;color:var(--ink);background:var(--card);
     border:1px solid var(--line);border-radius:10px;padding:11px 13px;line-height:1.5}
 
+  /* ---------- DESIGN POLISH (from the team's design pass) ---------- */
+  body{background:radial-gradient(circle at 12% 8%,rgba(255,194,74,.10),transparent 28%),
+    radial-gradient(circle at 88% 18%,rgba(91,141,239,.10),transparent 26%),
+    linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--bg) 88%,#ffffff 12%));min-height:100vh}
+  .card{background:linear-gradient(135deg,var(--card),color-mix(in srgb,var(--card) 92%,var(--brand-soft) 8%));
+    box-shadow:0 14px 34px rgba(31,42,55,.09)}
+  .logo .sun{animation:sunnyFloat 4s ease-in-out infinite}
+  @keyframes sunnyFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-5px) rotate(4deg)}}
+  .login-hero{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:18px}
+  .login-hero .big-sun{width:84px;height:84px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#ffe9a8,var(--m5));
+    box-shadow:0 0 0 12px rgba(255,194,74,.15),0 12px 28px rgba(255,194,74,.18);
+    display:flex;align-items:center;justify-content:center;animation:sunnyFloat 4s ease-in-out infinite;font-size:2rem}
+  .login-hero .sparkles{font-size:1rem;letter-spacing:.25em;color:var(--accent)}
+  .m-btn{background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--brand-soft) 24%,var(--card) 76%));overflow:hidden}
+  .m-btn:hover{transform:translateY(-7px) scale(1.035);border-color:var(--brand);box-shadow:0 12px 24px rgba(91,141,239,.14)}
+  .m-btn.sel{transform:translateY(-3px);box-shadow:0 12px 24px rgba(91,141,239,.16)}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 18px}
+  .stat-card{background:linear-gradient(135deg,var(--card),color-mix(in srgb,var(--brand-soft) 32%,var(--card) 68%));
+    border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow)}
+  .stat-card .label{font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .stat-card .value{font-size:1.45rem;line-height:1.1;font-weight:800;color:var(--ink)}
+  .stat-card .hint{font-size:.72rem;color:var(--muted);margin-top:4px}
+  @media(max-width:760px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+  body.big .stat-card .value{font-size:1.75rem}
+  body.big .stat-card .label,body.big .stat-card .hint{font-size:.82rem}
+  .celebrate{position:relative;overflow:hidden}
+  .confetti{position:absolute;inset:0;pointer-events:none}
+  .confetti i{position:absolute;width:8px;height:14px;border-radius:3px;animation:confettiFall 1.8s ease-out forwards}
+  @keyframes confettiFall{0%{transform:translateY(-30px) rotate(0deg);opacity:0}10%{opacity:1}
+    100%{transform:translateY(260px) rotate(420deg);opacity:0}}
+
+  /* This product is built for neurodivergent children. Perpetual motion is
+     exactly what some of them cannot tolerate, so honour the OS setting. */
+  @media (prefers-reduced-motion: reduce){
+    .logo .sun,.login-hero .big-sun{animation:none}
+    .confetti{display:none}
+    .m-btn:hover,.m-btn.sel{transform:none}
+    .stu:hover{transform:none}
+  }
+
   /* ---------- PHONE ----------
      Judges check in on their own phones, so the five-point scale has to fit on
      one row at 375px. It is a scale: you read it left to right, and a clipped
@@ -394,7 +435,10 @@
   <div id="viewLogin" class="view active">
     <div class="login">
       <div class="card login-card" id="loginPick">
-        <h1>Who's signing in?</h1>
+        <div class="login-hero"><div class="big-sun">☀️</div><div class="sparkles">✦ ✦ ✦</div></div>
+        <h1>Welcome to Sunny</h1>
+        <div class="sub" style="margin-bottom:14px">A calm place to check in and feel seen.</div>
+        <h1 style="font-size:1.2rem;margin-bottom:6px">Who's signing in?</h1>
         <div class="sub">Sunny keeps the two apart on purpose — the teacher's screen holds
           24 other children's check-ins.</div>
         <div class="roles">
@@ -475,7 +519,8 @@
         </div>
       </div>
 
-      <div class="card thanks" id="thanksBox">
+      <div class="card thanks celebrate" id="thanksBox">
+        <div class="confetti" id="confetti"></div>
         <div class="big" id="thanksFace"></div>
         <h2>Thanks for checking in, <span id="thanksName">Mia</span>!</h2>
         <p id="thanksMsg">However you're feeling, we're glad you're here today.</p>
@@ -509,6 +554,13 @@
         <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
         <button class="resetbtn" id="resetBtn" hidden onclick="confirmReset()">Clear visitors &amp; restart demo</button>
       </div>
+    </div>
+
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="label">Checked in</div><div class="value" id="statChecked">—</div><div class="hint">Students today</div></div>
+      <div class="stat-card"><div class="label">Soft signals</div><div class="value" id="statSignals">—</div><div class="hint">Need a gentle look</div></div>
+      <div class="stat-card"><div class="label">Class mood</div><div class="value" id="statMood">—</div><div class="hint">Today's average</div></div>
+      <div class="stat-card"><div class="label">Last check-in</div><div class="value" id="statLatest">—</div><div class="hint">Most recent tap</div></div>
     </div>
 
     <div class="grid-2">
@@ -787,6 +839,9 @@ function applyServerState(st){
     NAMES.length=SEEDED.length; SEEDED.forEach((n,i)=>NAMES[i]=n);
     LIVE_EPOCH=st.epoch;
   }
+  const newest=Math.max(0,...st.guests.map(g=>g.at||0),
+    ...Object.values(st.checkins).map(c=>c.at||0));
+  if(newest) LAST_AT=new Date(newest);
   st.guests.forEach(g=>{
     if(!HISTORY[g.name]){
       /* a visitor has no history — they are simply a new face in the room today */
@@ -937,7 +992,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHow()});
 
 /* ---------- KID ---------- */
 let picked=null,pickedWhy=null;
-let CURRENT_KID='Mia', LAST_CHECKIN=null;
+let CURRENT_KID='Mia', LAST_CHECKIN=null, LAST_AT=null;
 const wRow=document.getElementById('moodRow');
 MOODS.forEach(m=>{
   const b=document.createElement('button');
@@ -955,6 +1010,26 @@ WHY.forEach(t=>{
 /* A real submission: writes today's entry into this child's history, re-runs
    every rule, and repaints the teacher view. The tap genuinely reaches the
    dashboard — nothing here is staged. */
+/* Confetti fires only for a good day. A child who taps the thumbs-down is
+   told "that's a brave thing to share" — throwing a party over that would be
+   the app celebrating their distress, and it undercuts everything else we
+   claim about handling this carefully. */
+function launchConfetti(){
+  const box=document.getElementById('confetti');
+  if(!box) return;
+  box.innerHTML='';
+  const palette=['var(--m5)','var(--brand)','var(--good)','var(--m2)','var(--m1)'];
+  for(let i=0;i<24;i++){
+    const bit=document.createElement('i');
+    bit.style.left=(4+Math.random()*92)+'%';
+    bit.style.top=(-10-Math.random()*30)+'px';
+    bit.style.background=palette[i%palette.length];
+    bit.style.animationDelay=(Math.random()*.35)+'s';
+    box.appendChild(bit);
+  }
+  setTimeout(()=>{box.innerHTML='';},2200);
+}
+
 function submitCheckin(){
   const h=HISTORY[CURRENT_KID], today=h[h.length-1];
   today.score=picked.score;
@@ -977,6 +1052,8 @@ function submitCheckin(){
      that an algorithm flagged them — that is information for the adults around
      them, not a label to hand back to the child. */
   document.getElementById('sentNote').textContent='Sent to your teacher.';
+  LAST_AT=new Date();
+  if(picked.score>=4) launchConfetti();
 }
 function resetKid(){
   picked=pickedWhy=null;
@@ -1311,6 +1388,13 @@ function renderTeacher(){
   const avg=today.reduce((a,v)=>a+v,0)/(today.length||1);
   document.getElementById('classMood').textContent=
     avg>=4.4?'Mostly great':avg>=3.7?'Mostly good':avg>=3?'A flatter day':'A hard day';
+  const setStat=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setStat('statChecked',`${today.length}/${NAMES.length}`);
+  setStat('statSignals',flagged.length);
+  setStat('statMood',avg>=4.4?'Great':avg>=3.7?'Good':avg>=3?'Okay':'Low');
+  setStat('statLatest',LAST_AT
+    ? LAST_AT.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+    : '—');
   document.getElementById('checkedIn').textContent=
     `Monday 27 July · ${today.length} of ${NAMES.length} checked in`;
 }
