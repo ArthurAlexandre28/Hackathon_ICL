@@ -1,6 +1,6 @@
 # Team Summary
 
-**Team:** [TEAM NAME] · **Project:** Sunny — Classroom Mood Check-in · **Domain:** Education Technology
+**Team:** Sunny Team · **Project:** Sunny — Classroom Mood Check-in · **Domain:** Education Technology
 
 ---
 
