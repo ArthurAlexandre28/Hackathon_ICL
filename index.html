@@ -267,6 +267,8 @@
   .stu .dot svg{width:34px;height:34px;display:block}
   .stu .name{font-size:.76rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .stu.flag::after{content:"";position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--alert);box-shadow:0 0 0 3px color-mix(in srgb,var(--alert) 25%,transparent)}
+  .stu.qflag::after{content:"";position:absolute;top:7px;right:7px;width:9px;height:9px;
+    border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 25%,transparent)}
   .stu.active{outline:2px solid var(--brand);outline-offset:1px}
   .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px;font-size:.78rem;color:var(--muted)}
   .legend span{display:flex;align-items:center;gap:6px}
@@ -283,6 +285,10 @@
   .signal{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:12px;padding:14px;margin-bottom:12px;cursor:pointer;transition:.15s}
   .signal:hover{background:var(--brand-soft)}
   .signal.high{border-left-color:var(--alert)}
+  /* a data-quality note is not a worry about the child — it must not borrow
+     the visual language of one */
+  .signal.quality{border-left-color:var(--brand);background:color-mix(in srgb,var(--brand) 4%,transparent)}
+  .signal.quality .tag{background:var(--brand-soft);color:var(--brand)}
   .signal .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .signal .who{font-weight:800}
   .signal .tag{font-size:.66rem;font-weight:800;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn);white-space:nowrap}
@@ -991,16 +997,32 @@ function closeHow(){document.getElementById('howOverlay').classList.remove('show
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHow()});
 
 /* ---------- KID ---------- */
-let picked=null,pickedWhy=null;
+let picked=null,pickedWhy=null,ORDER=null;
+
+/* The scale is shuffled every time it is shown. Two reasons: a neighbour can no
+   longer read your answer from where your thumb lands, and a child who taps the
+   same spot every day stops producing a consistent score — which is what makes
+   R5 below able to notice they are not really answering. */
+function shuffledOrder(){
+  const a=MOODS.map(m=>m.score);
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
 let CURRENT_KID='Mia', LAST_CHECKIN=null, LAST_AT=null;
 const wRow=document.getElementById('moodRow');
-MOODS.forEach(m=>{
-  const b=document.createElement('button');
-  b.className='m-btn';b.innerHTML=faceSVG(m.score)+`<span class="lbl">${m.lbl}</span>`;
-  b.onclick=()=>{picked=m;[...wRow.children].forEach(c=>c.classList.remove('sel'));b.classList.add('sel');
-    document.getElementById('whyBox').classList.add('show');document.getElementById('sendBtn').disabled=false;};
-  wRow.appendChild(b);
-});
+function renderScale(){
+  ORDER=shuffledOrder();
+  wRow.innerHTML='';
+  ORDER.forEach((score,pos)=>{
+    const m=MOODS.find(x=>x.score===score);
+    const b=document.createElement('button');
+    b.className='m-btn';b.innerHTML=faceSVG(m.score)+`<span class="lbl">${m.lbl}</span>`;
+    b.onclick=()=>{picked={...m,pos};[...wRow.children].forEach(c=>c.classList.remove('sel'));b.classList.add('sel');
+      document.getElementById('whyBox').classList.add('show');document.getElementById('sendBtn').disabled=false;};
+    wRow.appendChild(b);
+  });
+}
+renderScale();
 const wChips=document.getElementById('whyChips');
 WHY.forEach(t=>{
   const c=document.createElement('button');c.className='chip';c.textContent=t;
@@ -1034,6 +1056,7 @@ function submitCheckin(){
   const h=HISTORY[CURRENT_KID], today=h[h.length-1];
   today.score=picked.score;
   today.why=pickedWhy||null;
+  today.pos=picked.pos;
   recompute();
   LAST_CHECKIN=CURRENT_KID;
   /* fire-and-forget: the child's screen must never wait on the network, and a
@@ -1061,7 +1084,7 @@ function resetKid(){
   document.getElementById('thanksBox').classList.remove('show');
   document.getElementById('whyBox').classList.remove('show');
   document.getElementById('sendBtn').disabled=true;
-  [...wRow.children].forEach(c=>c.classList.remove('sel'));
+  renderScale();
   [...wChips.children].forEach(c=>c.classList.remove('sel'));
 }
 
@@ -1142,9 +1165,15 @@ NAMES.forEach((name,idx)=>{
       case 'Noah':  score = t===28?2 : t===29?4 : (r<0.62?4:5); break;
       /* checked in happily for weeks, then simply stopped. null = no check-in */
       case 'Isla':  score = t>=26?null : (r<0.4?4:5); break;
+      /* taps the same spot every day without looking; because the scale is
+         shuffled, that produces a scatter of unrelated scores */
+      case 'Ben':   score = [5,2,4,1,3,5,2,4][t%8]; break;
       default:      score = (t%7===3)?3 : (r<0.4?4:5);
     }
-    return {...day,score};
+    /* pos = which slot on the shuffled row was tapped. Only seeded for the
+       child who demonstrates R5; everyone else varies naturally. */
+    const pos = name==='Ben' ? 0 : (score==null ? null : Math.floor(rnd(idx*17+t*3)*5));
+    return {...day,score,pos};
   });
 });
 
@@ -1206,6 +1235,32 @@ const RULES=[
        +`${dn}s (last ${this.of}): ${same.map(d=>d.score).join(', ')}\n`
        +`${hits} of ${this.of} ${dn}s ≥${this.gap.toFixed(1)} below → RULE FIRED`;
    }},
+  /* Not a wellbeing rule — a DATA QUALITY one. The scale is shuffled every time,
+     so a child who keeps tapping the same slot produces scores that jump around
+     at random. That pattern means the check-ins are not answers, and the honest
+     response is to distrust the data rather than to read meaning into it. */
+  {id:'R5',name:'May not be reading',level:'quality',span:5,need:4,minDistinct:3,
+   text:"Fires when a child taps the same position on the shuffled scale in 4 of their last 5 check-ins, and those taps produced 3 or more different scores.",
+   short:(n,d)=>`Tapped the same spot ${d.hits} of the last ${d.span} times, across a shuffled scale.`,
+   recent(h){return h.filter(d=>d.score!=null&&d.pos!=null).slice(-this.span)},
+   test(h){
+     const r=this.recent(h);
+     if(r.length<this.span) return false;
+     const counts={}; r.forEach(d=>counts[d.pos]=(counts[d.pos]||0)+1);
+     const top=Math.max(...Object.values(counts));
+     const distinct=new Set(r.map(d=>d.score)).size;
+     return top>=this.need && distinct>=this.minDistinct;
+   },
+   calc(h,med,name){
+     const r=this.recent(h);
+     const counts={}; r.forEach(d=>counts[d.pos]=(counts[d.pos]||0)+1);
+     const top=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+     return `Scale order is randomised on every check-in\n`
+       +`Last ${this.span}: ${r.map(d=>`slot ${d.pos+1}→${d.score}`).join('  ')}\n`
+       +`Slot ${Number(top[0])+1} tapped ${top[1]} of ${this.span} times, `
+       +`producing ${new Set(r.map(d=>d.score)).size} different scores\n`
+       +`Same slot despite a shuffled scale → RULE FIRED`;
+   }},
   /* Silence is the one signal a mood scale cannot express. A child who simply
      stops answering produces no low scores at all — so without this rule they
      become invisible at exactly the point you most want to see them. */
@@ -1238,6 +1293,9 @@ const LIMITS={
   R3:{notMean:n=>`A weekday pattern says something about that weekday, not about ${n}. Sunny is pointing at a timetable, not at a child.`,
       alts:"a subject they dread that day · a swimming lesson · the transition back after a weekend · an early bus · a weekend routine they'd rather not leave",
       next:"Look at what that morning actually involves before speaking to them — the answer may be in the timetable, and fixable without a conversation at all."},
+  R5:{notMean:n=>`This says nothing about how ${n} feels — it says their check-ins may not be answers at all, so nothing should be read into them either way.`,
+      alts:"tapping through to get back to class · not understanding what is being asked · finding the question uncomfortable and opting out quietly · a device where the first button is easiest to reach",
+      next:"Do not treat this as a wellbeing concern. Sit with them once and check the question makes sense — and take their recent scores with a pinch of salt until it settles."},
   R4:{notMean:n=>`Sunny knows only that no answer arrived. It does not know whether ${n} is upset, absent, bored of the app, or was simply never handed a device.`,
       alts:"off sick · a broken tablet · a class that skipped the routine · quietly opting out, which is allowed · not wanting to answer honestly and choosing silence instead",
       next:"Check the roll first — most silences are absence. If they have been in class and still not answering, that is worth a gentle word in person."}
@@ -1335,8 +1393,11 @@ function evaluateAll(){
       if(r.test(h,med)){
         const dow=h[h.length-1].dow;
         const detail={span:r.span,of:r.of,dayName:FULLDAY[dow],
-          hits:r.id==='R3'?r.sameDay(h).filter(d=>med-d.score>=r.gap).length:0,
-          missed:r.id==='R4'?r.missed(h):0};
+          missed:r.id==='R4'?r.missed(h):0,
+          hits:r.id==='R3' ? r.sameDay(h).filter(d=>med-d.score>=r.gap).length
+             : r.id==='R5' ? (()=>{const c={};r.recent(h).forEach(d=>c[d.pos]=(c[d.pos]||0)+1);
+                                   return Math.max(...Object.values(c));})()
+             : 0};
         out[name]={level:r.level,rule:r.id,ruleName:r.name,ruleText:r.text,
           calc:r.calc(h,med,name),short:r.short(name,detail),
           notMean:LIMITS[r.id].notMean(name),alts:LIMITS[r.id].alts,next:LIMITS[r.id].next};
@@ -1355,7 +1416,8 @@ const DAYS=['Mon','Tue','Wed','Thu','Fri'];
 
 document.getElementById('legend').innerHTML=
   MOODS.map(m=>`<span>${faceSVG(m.score,17)}${m.lbl}</span>`).join('')
-  +'<span><i style="background:var(--alert)"></i>Soft signal</span>';
+  +'<span><i style="background:var(--alert)"></i>Soft signal</span>'
+  +'<span><i style="background:var(--brand)"></i>Data quality</span>';
 
 /* Re-renders the whole teacher view from current state. Called on load and
    again after any check-in, so a new tap flows straight through to here. */
@@ -1364,7 +1426,9 @@ function renderTeacher(){
   stuWrap.innerHTML='';
   NAMES.forEach(n=>{
     const d=document.createElement('div');
-    d.className='stu'+(FLAGS[n]?' flag':'')+(GUESTS.includes(n)?' guest':'');d.dataset.name=n;
+    const lvl=FLAGS[n]&&FLAGS[n].level;
+    d.className='stu'+(lvl&&lvl!=='quality'?' flag':'')+(lvl==='quality'?' qflag':'')
+      +(GUESTS.includes(n)?' guest':'');d.dataset.name=n;
     d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${htm(n)}</div>`;
     d.onclick=()=>openDetail(n);
     stuWrap.appendChild(d);
@@ -1372,11 +1436,12 @@ function renderTeacher(){
 
   const sigList=document.getElementById('signalList');
   sigList.innerHTML='';
-  const flagged=NAMES.filter(n=>FLAGS[n])
-    .sort((a,b)=>(FLAGS[a].level==='high'?0:1)-(FLAGS[b].level==='high'?0:1));
+  const rank=n=>FLAGS[n].level==='high'?0:FLAGS[n].level==='watch'?1:2;
+  const flagged=NAMES.filter(n=>FLAGS[n]).sort((a,b)=>rank(a)-rank(b));
   flagged.forEach(n=>{
     const f=FLAGS[n];
-    const s=document.createElement('div');s.className='signal'+(f.level==='high'?' high':'');
+    const s=document.createElement('div');
+    s.className='signal'+(f.level==='high'?' high':f.level==='quality'?' quality':'');
     s.innerHTML=`<div class="row"><span class="who">${htm(n)}</span><span class="tag">${f.ruleName}</span></div>
       <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n]==null?'—':BASE[n].toFixed(1)}</div>`;
     s.onclick=()=>openDetail(n);
@@ -1429,8 +1494,10 @@ function openDetail(n){
   const f=FLAGS[n],b=BASE[n]==null?'—':BASE[n].toFixed(1);
   document.getElementById('dName').textContent=n;
   document.getElementById('dSub').textContent=f
-    ?`Signal raised by rule ${f.rule} · ${f.ruleName}`
-    :'No signal — shown for transparency. Any child can be opened at any time.';
+    ? (f.level==='quality'
+        ? `Data quality note · rule ${f.rule} — this is not a concern about the child`
+        : `Signal raised by rule ${f.rule} · ${f.ruleName}`)
+    : 'No signal — shown for transparency. Any child can be opened at any time.';
 
   document.getElementById('weekChart').innerHTML=DATA[n].map((s,i)=>
     `<div class="day"><div class="de">${faceSVG(s,22)}</div><div class="bar">${s==null
