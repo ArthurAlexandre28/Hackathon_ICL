@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sunny Login</title>
-
+ 
 <style>
 :root{
     --bg:#f4f7fb;
@@ -13,30 +13,33 @@
     --muted:#64748b;
     --line:#e5ecf4;
     --brand:#5b8def;
+    --brand-dark:#4472db;
     --brand-soft:#e8f0fe;
-    --m5:#ffc24a;
+    --sun:#ffc24a;
+    --navy:#1d2d50;
     --shadow:0 10px 30px rgba(31,42,55,.08);
     --radius:22px;
     font-family:"Segoe UI",sans-serif;
 }
-
+ 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
-
+ 
 body{
     background:var(--bg);
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
+    padding:20px;
 }
-
+ 
 .container{
-    width:950px;
-    max-width:95%;
+    width:1000px;
+    max-width:100%;
     display:grid;
     grid-template-columns:1fr 1fr;
     background:white;
@@ -44,47 +47,147 @@ body{
     overflow:hidden;
     box-shadow:var(--shadow);
 }
-
+ 
+/* ---------- LEFT PANEL ---------- */
+ 
 .left{
-    background:#1d2d50;
+    position:relative;
+    background:var(--navy);
     color:white;
     padding:50px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
+    overflow:hidden;
 }
-
-.sun{
-    width:70px;
-    height:70px;
+ 
+.sun-decor{
+    position:absolute;
+    top:-90px;
+    right:-90px;
+    width:280px;
+    height:280px;
     border-radius:50%;
-    background:var(--m5);
-    margin-bottom:20px;
+    background:rgba(255,255,255,0.04);
 }
-
-.left h1{
-    font-size:38px;
-    margin-bottom:10px;
+ 
+.sun-decor::before{
+    content:"";
+    position:absolute;
+    top:40px;
+    left:40px;
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    background:var(--sun);
 }
-
-.left p{
-    color:#d5dbe8;
-    line-height:1.6;
+ 
+.brand-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:60px;
+    position:relative;
+    z-index:1;
 }
-
+ 
+.sun-logo{
+    width:52px;
+    height:52px;
+    min-width:52px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+ 
+.sun-logo span{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:var(--sun);
+}
+ 
+.brand-row h1{
+    font-size:22px;
+}
+ 
+.brand-row p{
+    color:#a9b4cc;
+    font-size:13px;
+}
+ 
+.left-copy{
+    position:relative;
+    z-index:1;
+}
+ 
+.left-copy h2{
+    font-size:34px;
+    line-height:1.25;
+    margin-bottom:18px;
+}
+ 
+.left-copy p{
+    color:#c3cbdd;
+    line-height:1.7;
+    font-size:15px;
+    max-width:400px;
+}
+ 
+.moods{
+    display:flex;
+    gap:12px;
+    margin-top:36px;
+    position:relative;
+    z-index:1;
+}
+ 
+.mood{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+}
+ 
+.mood.m1{ background:#ffc24a; }
+.mood.m2{ background:#ffd98f; }
+.mood.m3{ background:#8b93a6; }
+.mood.m4{ background:#6f93c9; }
+.mood.m5{ background:#8b7bd8; }
+ 
+.privacy-note{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#a9b4cc;
+    font-size:13px;
+    position:relative;
+    z-index:1;
+}
+ 
+/* ---------- RIGHT PANEL ---------- */
+ 
 .right{
     padding:50px;
 }
-
+ 
 .right h2{
-    margin-bottom:10px;
+    font-size:28px;
+    margin-bottom:8px;
+    color:var(--ink);
 }
-
+ 
 .subtitle{
     color:var(--muted);
     margin-bottom:25px;
+    font-size:15px;
 }
-
+ 
 .role{
     display:flex;
     background:#eef3fb;
@@ -92,7 +195,7 @@ body{
     padding:5px;
     margin-bottom:25px;
 }
-
+ 
 .role button{
     flex:1;
     border:none;
@@ -101,36 +204,76 @@ body{
     cursor:pointer;
     border-radius:999px;
     font-weight:bold;
+    color:var(--ink);
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:background .15s ease, color .15s ease;
 }
-
+ 
 .role button.active{
     background:var(--brand);
     color:white;
 }
-
+ 
 label{
     display:block;
-    margin-bottom:15px;
+    margin-bottom:18px;
 }
-
+ 
 label span{
     display:block;
     margin-bottom:6px;
     font-weight:bold;
+    font-size:14px;
+    color:var(--ink);
 }
-
+ 
 input,
 select{
     width:100%;
-    padding:13px;
+    padding:13px 14px;
     border-radius:12px;
-    border:1px solid #ddd;
+    border:1px solid var(--line);
+    font-size:15px;
+    color:var(--ink);
 }
-
+ 
+input:focus,
+select:focus{
+    outline:none;
+    border-color:var(--brand);
+}
+ 
+.password-wrap{
+    position:relative;
+}
+ 
+.password-wrap input{
+    padding-right:70px;
+}
+ 
+.showBtn{
+    position:absolute;
+    right:6px;
+    top:6px;
+    bottom:6px;
+    background:var(--brand-soft);
+    color:var(--brand-dark);
+    border:none;
+    border-radius:8px;
+    padding:0 14px;
+    font-weight:bold;
+    font-size:13px;
+    cursor:pointer;
+}
+ 
 .loginBtn{
     width:100%;
-    padding:14px;
-    margin-top:10px;
+    padding:15px;
+    margin-top:6px;
     border:none;
     border-radius:12px;
     background:var(--brand);
@@ -138,211 +281,260 @@ select{
     font-size:16px;
     font-weight:bold;
     cursor:pointer;
+    transition:background .15s ease;
 }
-
+ 
+.loginBtn:hover{
+    background:var(--brand-dark);
+}
+ 
 .note{
     margin-top:18px;
     background:var(--brand-soft);
-    padding:12px;
-    border-radius:10px;
+    padding:14px;
+    border-radius:12px;
     color:#555;
     font-size:14px;
+    text-align:center;
 }
-
+ 
+.note b{
+    color:var(--brand-dark);
+}
+ 
 .studentOnly{
     display:none;
 }
+ 
+@media (max-width: 720px){
+    .container{ grid-template-columns:1fr; }
+    .left{ padding:35px; }
+    .right{ padding:35px; }
+}
 </style>
-
+ 
 </head>
 <body>
-
+ 
 <div class="container">
-
+ 
 <div class="left">
-
+ 
+<div class="sun-decor"></div>
+ 
 <div>
-
-<div class="sun"></div>
-
+ 
+<div class="brand-row">
+<div class="sun-logo"><span></span></div>
+<div>
 <h1>Sunny</h1>
-
+<p>Classroom Mood Check-in</p>
+</div>
+</div>
+ 
+<div class="left-copy">
+<h2>A calm start to<br>the school day.</h2>
 <p>
-A calm classroom mood check-in platform for students and teachers.
+Children check in privately. Teachers see gentle patterns
+over time, without diagnoses, rankings, or automatic decisions.
 </p>
-
 </div>
-
-<div>
-🛡 Privacy First<br>
-No diagnoses • No rankings • Teacher decides
+ 
+<div class="moods">
+<div class="mood m1">😄</div>
+<div class="mood m2">🙂</div>
+<div class="mood m3">😐</div>
+<div class="mood m4">😕</div>
+<div class="mood m5">👎</div>
 </div>
-
+ 
 </div>
-
+ 
+<div class="privacy-note">
+🛡 Private by design &middot; No child is compared with classmates
+</div>
+ 
+</div>
+ 
 <div class="right">
-
-<h2 id="title">Teacher Login</h2>
-
+ 
+<h2 id="title">Teacher sign in</h2>
+ 
 <p class="subtitle" id="subtitle">
-Access the classroom dashboard.
+Access your classroom check-ins and soft signals.
 </p>
-
+ 
 <div class="role">
-
+ 
 <button class="active" id="teacherBtn">
 🍎 Teacher
 </button>
-
+ 
 <button id="studentBtn">
 🧒 Student
 </button>
-
+ 
 </div>
-
+ 
 <div id="teacherFields">
-
+ 
 <label>
-
-<span>Email</span>
-
+ 
+<span>School email</span>
+ 
 <input id="email"
 type="email"
 value="teacher@sunny.school">
-
+ 
 </label>
-
+ 
 </div>
-
+ 
 <div id="studentFields" class="studentOnly">
-
+ 
 <label>
-
-<span>Your Name</span>
-
+ 
+<span>Your name</span>
+ 
 <select id="studentName">
-
+ 
 <option>Mia</option>
 <option>Noah</option>
 <option>Aroha</option>
 <option>Cody</option>
 <option>Maia</option>
-
+ 
 </select>
-
+ 
 </label>
-
+ 
 </div>
-
+ 
 <label>
-
+ 
 <span id="passwordLabel">
 Password
 </span>
-
+ 
+<div class="password-wrap">
 <input
 id="password"
-type="password">
-
+type="password"
+placeholder="Enter your password">
+<button type="button" class="showBtn" id="showBtn">Show</button>
+</div>
+ 
 </label>
-
+ 
 <button
 class="loginBtn"
+id="loginBtn"
 onclick="login()">
-
-Login
-
+ 
+Sign in as teacher
+ 
 </button>
-
+ 
 <div class="note" id="note">
-
-Teacher Password:
-<b>sunny123</b>
-
+ 
+Demo password: <b>sunny123</b>
+ 
 </div>
-
+ 
 </div>
-
+ 
 </div>
-
+ 
 <script>
-
+ 
 let role="teacher";
-
+ 
 teacherBtn.onclick=()=>{
-
+ 
 role="teacher";
-
+ 
 teacherBtn.classList.add("active");
 studentBtn.classList.remove("active");
-
+ 
 teacherFields.style.display="block";
 studentFields.style.display="none";
-
-title.innerHTML="Teacher Login";
-
-subtitle.innerHTML="Access the classroom dashboard.";
-
+ 
+title.innerHTML="Teacher sign in";
+ 
+subtitle.innerHTML="Access your classroom check-ins and soft signals.";
+ 
 passwordLabel.innerHTML="Password";
-
-note.innerHTML="Teacher Password: <b>sunny123</b>";
-
+ 
+loginBtn.innerHTML="Sign in as teacher";
+ 
+note.innerHTML="Demo password: <b>sunny123</b>";
+ 
 }
-
+ 
 studentBtn.onclick=()=>{
-
+ 
 role="student";
-
+ 
 studentBtn.classList.add("active");
 teacherBtn.classList.remove("active");
-
+ 
 teacherFields.style.display="none";
 studentFields.style.display="block";
-
-title.innerHTML="Student Login";
-
+ 
+title.innerHTML="Student sign in";
+ 
 subtitle.innerHTML="Start today's mood check-in.";
-
-passwordLabel.innerHTML="Class Code";
-
-note.innerHTML="Class Code: <b>ROOM6</b>";
-
+ 
+passwordLabel.innerHTML="Class code";
+ 
+loginBtn.innerHTML="Sign in as student";
+ 
+note.innerHTML="Demo class code: <b>ROOM6</b>";
+ 
 }
-
+ 
+showBtn.onclick=()=>{
+ 
+const isHidden = password.type === "password";
+password.type = isHidden ? "text" : "password";
+showBtn.textContent = isHidden ? "Hide" : "Show";
+ 
+}
+ 
 function login(){
-
+ 
 if(role==="teacher"){
-
+ 
 if(password.value==="sunny123"){
-
+ 
 window.location.href="index.html?role=teacher";
-
+ 
 }else{
-
+ 
 alert("Incorrect password.");
-
+ 
 }
-
+ 
 }else{
-
+ 
 if(password.value.toUpperCase()==="ROOM6"){
-
+ 
 const name=studentName.value;
-
+ 
 window.location.href=
 "index.html?role=student&name="+encodeURIComponent(name);
-
+ 
 }else{
-
+ 
 alert("Incorrect classroom code.");
-
+ 
 }
-
+ 
 }
-
+ 
 }
-
+ 
 </script>
-
+ 
 </body>
 </html>
