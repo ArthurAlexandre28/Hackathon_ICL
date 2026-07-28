@@ -84,6 +84,23 @@
     padding:7px 13px;border-radius:999px;cursor:pointer}
   .session button:hover{color:var(--alert)}
 
+  .bigbtn{border:1px solid var(--line);background:var(--card);color:var(--muted);font-weight:800;
+    font-size:.8rem;padding:9px 14px;border-radius:999px;cursor:pointer}
+  .bigbtn[hidden]{display:none}
+  .bigbtn.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+  /* everything projected scales from these, so one class bumps the whole screen */
+  body.big #viewTeacher{font-size:1.16em}
+  body.big .stu .name{font-size:.92rem}
+  body.big .stu .dot,body.big .stu .dot svg{width:44px;height:44px}
+  body.big .students{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+  body.big .signal .desc{font-size:.95rem}
+  body.big .signal .rule{font-size:.82rem}
+  body.big .signal .who{font-size:1.15rem}
+  body.big .signal .tag{font-size:.74rem}
+  body.big .baseline-note,body.big .disclaimer{font-size:.92rem}
+  body.big .legend{font-size:.88rem}
+  body.big .t-head h2{font-size:1.75rem}
+  body.big .section-title{font-size:.88rem}
   .live{display:flex;align-items:center;gap:7px;background:color-mix(in srgb,var(--good) 14%,transparent);
     border:1px solid var(--good);border-radius:999px;padding:7px 14px;font-size:.76rem;
     font-weight:800;letter-spacing:.08em;color:var(--good)}
@@ -94,6 +111,10 @@
   .live.stale i{background:var(--warn)}
   @keyframes blip{0%,100%{opacity:1}50%{opacity:.25}}
   .joinalt{margin-top:20px;border-top:1px dashed var(--line);padding-top:18px}
+  /* when it leads, it is the primary action, not a footnote */
+  .joinalt.first{margin:0 0 22px;border-top:0;border-bottom:1px dashed var(--line);
+    padding:0 0 20px}
+  .joinalt.first .or{font-size:.82rem;color:var(--brand)}
   .joinalt[hidden]{display:none}
   .joinalt .or{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
     color:var(--muted);margin-bottom:12px}
@@ -101,6 +122,11 @@
     text-align:center;color:var(--ink);background:var(--bg);border:2px solid var(--line);
     border-radius:12px;padding:11px 14px;margin-bottom:11px}
   .joinalt input:focus{outline:none;border-color:var(--brand)}
+  /* the primary action of the whole live demo — style it like one */
+  .joinbtn{width:100%;max-width:280px;border:0;background:var(--brand);color:#fff;font-weight:800;
+    font-size:1rem;padding:13px 20px;border-radius:12px;cursor:pointer;transition:.15s}
+  .joinbtn:hover{filter:brightness(1.07)}
+  .joinbtn:active{transform:scale(.98)}
   .stu.guest .name{color:var(--brand)}
   .stu.guest::before{content:"new";position:absolute;top:6px;left:7px;font-size:.55rem;
     font-weight:800;color:var(--brand);letter-spacing:.05em}
@@ -159,6 +185,32 @@
   .mine .d span{display:block;font-size:.62rem;color:var(--muted);font-weight:700;margin-top:5px}
   .mine .msg{margin-top:14px;font-size:.85rem;color:var(--ink);background:var(--card);
     border:1px solid var(--line);border-radius:10px;padding:11px 13px;line-height:1.5}
+
+  /* ---------- PHONE ----------
+     Judges check in on their own phones, so the five-point scale has to fit on
+     one row at 375px. It is a scale: you read it left to right, and a clipped
+     or wrapped option is an option nobody picks. */
+  @media(max-width:560px){
+    .wrap{padding:14px}
+    .kid-card{padding:26px 14px}
+    .kid h1{font-size:1.42rem}
+    .kid .sub{font-size:.88rem;margin-bottom:20px}
+    .mood-row{gap:6px}
+    .m-btn{padding:11px 3px;gap:7px;border-radius:14px}
+    .m-btn svg{width:42px;height:42px}
+    .m-btn .lbl{font-size:.64rem}
+    .login-card{padding:26px 16px}
+    .login h1{font-size:1.35rem;padding:0 52px}
+    .kid-see,.proto-note{padding:16px 15px}
+    .top{margin-bottom:16px}
+    .logo{font-size:1.15rem}
+    .logo .sun{width:32px;height:32px}
+  }
+  @media(max-width:380px){
+    .m-btn{padding:9px 2px}
+    .m-btn svg{width:36px;height:36px}
+    .m-btn .lbl{font-size:.6rem}
+  }
 
   /* ---------- TEACHER VIEW ---------- */
   .t-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:18px}
@@ -327,6 +379,7 @@
     </div>
     <div class="topbtns">
       <button class="howbtn" onclick="openHow()">🔍 How Sunny works</button>
+      <button class="bigbtn" id="bigBtn" hidden onclick="toggleBig()" title="Scale the teacher view up for a projector">⤢ Big screen</button>
       <div class="live" id="liveBadge" hidden title="Shared class — visitors' check-ins appear here live">
         <i></i><span>LIVE</span>
       </div>
@@ -378,10 +431,10 @@
           this list shows names, never how anyone is feeling.</div>
         <div class="namegrid" id="nameGrid"></div>
         <div class="joinalt" id="joinAlt" hidden>
-          <div class="or">visiting today?</div>
+          <div class="or" id="joinOr">visiting today?</div>
           <input id="guestName" placeholder="Your first name" maxlength="18" autocomplete="off"
             onkeydown="if(event.key==='Enter')joinAsGuest()">
-          <button class="act" onclick="joinAsGuest()">Join Room 6</button>
+          <button class="joinbtn" onclick="joinAsGuest()">Join Room 6 →</button>
           <div class="err" id="guestErr" hidden></div>
         </div>
       </div>
@@ -810,11 +863,16 @@ function showView(v){
     document.getElementById('view'+k).classList.toggle('active',v===k.toLowerCase()));
   const sess=document.getElementById('session');
   sess.hidden=!AUTH;
+  document.getElementById('bigBtn').hidden=!(AUTH&&AUTH.role==='teacher');
   if(AUTH) document.getElementById('sessionWho').textContent=
     AUTH.role==='teacher' ? `🍎 ${AUTH.name}` : `👋 ${AUTH.name}`;
   window.scrollTo(0,0);
 }
 
+function toggleBig(){
+  const on=document.body.classList.toggle('big');
+  document.getElementById('bigBtn').classList.toggle('on',on);
+}
 function pickRole(r){
   hideAllLogin();
   document.getElementById(r==='student'?'loginStudent':'loginTeacher').hidden=false;
@@ -834,6 +892,11 @@ function enterClass(){
   if(v!==CLASS_CODE){document.getElementById('codeErr').hidden=false;return;}
   hideAllLogin();
   document.getElementById('loginName').hidden=false;
+  const join=document.getElementById('joinAlt'), holder=document.getElementById('loginName');
+  if(LIVE && join.previousElementSibling!==holder.querySelector('.sub')){
+    holder.insertBefore(join, document.getElementById('nameGrid'));
+    join.classList.add('first');
+  }
   const grid=document.getElementById('nameGrid');
   grid.innerHTML=NAMES.map(n=>
     `<button data-name="${htm(n)}">${initialSVG(n,34)}<span>${htm(n)}</span></button>`).join('');
@@ -1420,26 +1483,6 @@ function act(btn,kind,name){
 function closeDetail(){
   document.getElementById('detailPanel').classList.remove('show');
   document.querySelectorAll('.stu').forEach(x=>x.classList.remove('active'));
-}
-
-/* ---------- Login Redirect Support ---------- */
-const params = new URLSearchParams(window.location.search);
-
-const role = params.get("role");
-const student = params.get("name");
-
-if (role === "teacher") {
-    showView("teacher");
-}
-
-if (role === "student") {
-    showView("kid");
-
-    if (student) {
-        CURRENT_KID = student;
-        document.getElementById("kidName").textContent = student;
-        document.getElementById("whoSel").value = student;
-    }
 }
 </script>
 </body>
