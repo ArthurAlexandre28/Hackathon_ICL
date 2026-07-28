@@ -84,6 +84,27 @@
     padding:7px 13px;border-radius:999px;cursor:pointer}
   .session button:hover{color:var(--alert)}
 
+  .live{display:flex;align-items:center;gap:7px;background:color-mix(in srgb,var(--good) 14%,transparent);
+    border:1px solid var(--good);border-radius:999px;padding:7px 14px;font-size:.76rem;
+    font-weight:800;letter-spacing:.08em;color:var(--good)}
+  .live[hidden]{display:none}
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--good);animation:blip 1.6s infinite}
+  .live.pulse{transform:scale(1.06);transition:transform .2s}
+  .live.stale{border-color:var(--warn);color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent)}
+  .live.stale i{background:var(--warn)}
+  @keyframes blip{0%,100%{opacity:1}50%{opacity:.25}}
+  .joinalt{margin-top:20px;border-top:1px dashed var(--line);padding-top:18px}
+  .joinalt[hidden]{display:none}
+  .joinalt .or{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px}
+  .joinalt input{width:100%;max-width:280px;font-family:inherit;font-size:1rem;font-weight:600;
+    text-align:center;color:var(--ink);background:var(--bg);border:2px solid var(--line);
+    border-radius:12px;padding:11px 14px;margin-bottom:11px}
+  .joinalt input:focus{outline:none;border-color:var(--brand)}
+  .stu.guest .name{color:var(--brand)}
+  .stu.guest::before{content:"new";position:absolute;top:6px;left:7px;font-size:.55rem;
+    font-weight:800;color:var(--brand);letter-spacing:.05em}
+
   /* ---------- KID VIEW ---------- */
   .kid{max-width:560px;margin:0 auto}
   .kid-card{padding:34px 28px;text-align:center;position:relative}
@@ -160,6 +181,11 @@
   .legend i{width:14px;height:14px;border-radius:50%;display:inline-block}
   .baseline-note{margin-top:12px;font-size:.78rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
 
+  .t-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .resetbtn{border:1px solid var(--line);background:var(--card);color:var(--muted);
+    font-size:.75rem;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
+  .resetbtn[hidden]{display:none}
+  .resetbtn:hover{border-color:var(--alert);color:var(--alert)}
   .signals{padding:20px}
   .signal{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:12px;padding:14px;margin-bottom:12px;cursor:pointer;transition:.15s}
   .signal:hover{background:var(--brand-soft)}
@@ -301,6 +327,9 @@
     </div>
     <div class="topbtns">
       <button class="howbtn" onclick="openHow()">🔍 How Sunny works</button>
+      <div class="live" id="liveBadge" hidden title="Shared class — visitors' check-ins appear here live">
+        <i></i><span>LIVE</span>
+      </div>
       <div class="session" id="session" hidden>
         <span id="sessionWho"></span>
         <button onclick="signOut()">Sign out</button>
@@ -348,6 +377,13 @@
         <div class="sub">Tap yourself. You'll only ever see your own check-ins —
           this list shows names, never how anyone is feeling.</div>
         <div class="namegrid" id="nameGrid"></div>
+        <div class="joinalt" id="joinAlt" hidden>
+          <div class="or">visiting today?</div>
+          <input id="guestName" placeholder="Your first name" maxlength="18" autocomplete="off"
+            onkeydown="if(event.key==='Enter')joinAsGuest()">
+          <button class="act" onclick="joinAsGuest()">Join Room 6</button>
+          <div class="err" id="guestErr" hidden></div>
+        </div>
       </div>
 
       <!-- teacher: a real PIN -->
@@ -416,7 +452,10 @@
         <h2>Room 6 · Morning check-in</h2>
         <div class="meta" id="checkedIn">Monday 27 July · 24 of 26 checked in</div>
       </div>
-      <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
+      <div class="t-right">
+        <div class="meta">Class today: <b id="classMood">Mostly good</b></div>
+        <button class="resetbtn" id="resetBtn" hidden onclick="confirmReset()">Clear visitors &amp; restart demo</button>
+      </div>
     </div>
 
     <div class="grid-2">
@@ -653,6 +692,112 @@ const LBL={5:'Great',4:'Good',3:'Okay',2:'Not good',1:'Really bad'};
 
 const WHY=['😴 Tired','👫 Friend stuff','📚 Worried about work','🏠 Home stuff','🎉 Excited','🤐 Rather not say'];
 
+/* ---------- LIVE MODE ----------
+   When served by server.js the class is shared across devices: visitors join on
+   their own phones and appear on the projected teacher screen within ~1.5s.
+   Opened straight from the filesystem there is no server, so the app silently
+   stays in single-device mode and every existing demo still works. The rule
+   engine never moves — the server stores check-ins, the browser decides what
+   they mean. */
+/* Names reach the DOM from the network, and real names contain apostrophes
+   (O'Brien, Ngā Rima). Never interpolate one into an inline handler — pass it
+   through a data attribute and read it back. */
+const htm=v=>String(v).replace(/[&<>"']/g,c=>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DETAIL_NAME=null;                             // child currently open in the panel
+
+let LIVE=false, LIVE_EPOCH=null, pollTimer=null;
+const GUESTS=[];                                  // names of people who joined live
+
+async function api(path,body){
+  const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)}:{});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function detectLive(){
+  try{
+    const st=await api('/api/state');
+    LIVE=true; LIVE_EPOCH=st.epoch;
+    applyServerState(st);
+  }catch{ LIVE=false; }
+  document.getElementById('liveBadge').hidden=!LIVE;
+  document.getElementById('joinAlt').hidden=!LIVE;
+  document.getElementById('resetBtn').hidden=!LIVE;
+}
+
+/* Fold the server's check-ins into the local class, then re-run the rules. */
+function applyServerState(st){
+  if(LIVE_EPOCH!==null && st.epoch!==LIVE_EPOCH){    // someone reset the demo
+    GUESTS.splice(0,GUESTS.length);
+    NAMES.length=SEEDED.length; SEEDED.forEach((n,i)=>NAMES[i]=n);
+    LIVE_EPOCH=st.epoch;
+  }
+  st.guests.forEach(g=>{
+    if(!HISTORY[g.name]){
+      /* a visitor has no history — they are simply a new face in the room today */
+      HISTORY[g.name]=CALENDAR.map((day,t)=>({...day,score:t===29?g.score:null}));
+      PLANS[g.name]=undefined;
+      NAMES.push(g.name); GUESTS.push(g.name);
+    }else{
+      HISTORY[g.name][29].score=g.score;
+      HISTORY[g.name][29].why=g.why;
+    }
+  });
+  Object.entries(st.checkins).forEach(([n,c])=>{
+    if(HISTORY[n]){ HISTORY[n][29].score=c.score; HISTORY[n][29].why=c.why; }
+  });
+  recompute();
+}
+
+function startPolling(){
+  stopPolling();
+  if(!LIVE) return;
+  pollTimer=setInterval(async()=>{
+    try{
+      const before=NAMES.length;
+      applyServerState(await api('/api/state'));
+      const badge=document.getElementById('liveBadge');
+      badge.classList.remove('stale');
+      if(NAMES.length>before){
+        badge.classList.add('pulse');
+        setTimeout(()=>badge.classList.remove('pulse'),900);
+      }
+    }catch{ document.getElementById('liveBadge').classList.add('stale'); }
+  },1500);
+}
+function stopPolling(){ if(pollTimer){clearInterval(pollTimer);pollTimer=null;} }
+
+async function joinAsGuest(){
+  const el=document.getElementById('guestName');
+  const name=el.value.trim();
+  const err=document.getElementById('guestErr');
+  if(name.length<2){ err.textContent='Type your first name.'; err.hidden=false; return; }
+  if(NAMES.includes(name)){ err.textContent='Someone in the class already uses that name — add an initial.'; err.hidden=false; return; }
+  err.hidden=true;
+  try{
+    await api('/api/join',{name});
+    applyServerState(await api('/api/state'));
+    signInStudent(name);
+  }catch(e){ err.textContent='Could not join. Is the class still open?'; err.hidden=false; }
+}
+
+async function resetLive(){
+  if(!LIVE) return;
+  await api('/api/reset',{});
+  location.reload();
+}
+function confirmReset(){
+  const btn=document.getElementById('resetBtn');
+  if(btn.dataset.armed){ resetLive(); return; }
+  btn.dataset.armed='1';
+  btn.textContent='Sure? This clears every visitor — click again';
+  btn.style.borderColor='var(--alert)'; btn.style.color='var(--alert)';
+  setTimeout(()=>{delete btn.dataset.armed;btn.textContent='Clear visitors & restart demo';
+    btn.style.borderColor='';btn.style.color='';},4000);
+}
+
 /* ---------- SESSION ----------
    Prototype only: this runs in the browser and secures nothing. It exists
    because the two roles really are different surfaces over different data —
@@ -689,8 +834,10 @@ function enterClass(){
   if(v!==CLASS_CODE){document.getElementById('codeErr').hidden=false;return;}
   hideAllLogin();
   document.getElementById('loginName').hidden=false;
-  document.getElementById('nameGrid').innerHTML=NAMES.map(n=>
-    `<button onclick="signInStudent('${n}')">${initialSVG(n,34)}<span>${n}</span></button>`).join('');
+  const grid=document.getElementById('nameGrid');
+  grid.innerHTML=NAMES.map(n=>
+    `<button data-name="${htm(n)}">${initialSVG(n,34)}<span>${htm(n)}</span></button>`).join('');
+  grid.onclick=e=>{const b=e.target.closest('button[data-name]');if(b)signInStudent(b.dataset.name);};
 }
 function signInStudent(n){
   AUTH={role:'student',name:n};
@@ -709,9 +856,11 @@ function enterTeacher(){
   el.value='';
   closeDetail();
   showView('teacher');
+  startPolling();
 }
 function signOut(){
   AUTH=null;
+  stopPolling();
   closeDetail();
   document.getElementById('mineBox').innerHTML='';
   document.getElementById('escBox').innerHTML='';
@@ -749,6 +898,10 @@ function submitCheckin(){
   today.why=pickedWhy||null;
   recompute();
   LAST_CHECKIN=CURRENT_KID;
+  /* fire-and-forget: the child's screen must never wait on the network, and a
+     failed post leaves their local view correct either way */
+  if(LIVE) api('/api/checkin',{name:CURRENT_KID,score:picked.score,why:pickedWhy||null})
+    .catch(()=>{});
 
   document.getElementById('kidMain').style.display='none';
   document.getElementById('thanksBox').classList.add('show');
@@ -809,6 +962,7 @@ function showMine(){
    nothing about which children get flagged is written by hand. */
 const NAMES=['Mia','Liam','Aroha','Noah','Ella','Kai','Sophie','Jack','Ruby','Tane','Olivia','Max',
 'Hana','Leo','Grace','Finn','Isla','Cody','Maia','Ben','Zoe','Nikau','Lily','Sam'];
+const SEEDED=[...NAMES];   // the roster live guests get appended to
 const DAYNAME=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const FULLDAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
@@ -987,7 +1141,7 @@ function renderPlan(n){
   if(!pl){
     box.innerHTML=`<div class="plan-empty">
       <p>No plan yet for ${n}. Nobody who knows them has written one down.</p>
-      <button class="act" onclick="editPlan('${n}')">+ Add a plan for ${n}</button></div>`;
+      <button class="act" onclick="editPlan(DETAIL_NAME)">+ Add a plan for ${htm(n)}</button></div>`;
     return;
   }
   box.innerHTML=`<div class="plan">
@@ -996,7 +1150,7 @@ function renderPlan(n){
     <dl>${PLAN_FIELDS.map(([k,label,cls])=>pl[k]
       ? `<dt class="${cls||''}">${label}</dt><dd>${pl[k]}</dd>` : '').join('')}</dl>
     <div class="planact">
-      <button class="act" onclick="editPlan('${n}')">Edit this plan</button>
+      <button class="act" onclick="editPlan(DETAIL_NAME)">Edit this plan</button>
     </div></div>`;
 }
 
@@ -1008,8 +1162,8 @@ function editPlan(n){
       `<label class="${cls||''}">${label}</label>
        <textarea id="pf_${k}" placeholder="Leave blank if you're not sure">${pl[k]||''}</textarea>`).join('')}
     <div class="planact">
-      <button class="act" onclick="savePlan('${n}')">Save plan</button>
-      <button class="act" onclick="renderPlan('${n}')">Cancel</button>
+      <button class="act" onclick="savePlan(DETAIL_NAME)">Save plan</button>
+      <button class="act" onclick="renderPlan(DETAIL_NAME)">Cancel</button>
     </div>
     <div style="font-size:.78rem;color:var(--muted);margin-top:10px">
       In a real deployment a parent fills this in from their own simple form —
@@ -1070,8 +1224,8 @@ function renderTeacher(){
   stuWrap.innerHTML='';
   NAMES.forEach(n=>{
     const d=document.createElement('div');
-    d.className='stu'+(FLAGS[n]?' flag':'');d.dataset.name=n;
-    d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${n}</div>`;
+    d.className='stu'+(FLAGS[n]?' flag':'')+(GUESTS.includes(n)?' guest':'');d.dataset.name=n;
+    d.innerHTML=`<div class="dot">${faceSVG(DATA[n][4],34)}</div><div class="name">${htm(n)}</div>`;
     d.onclick=()=>openDetail(n);
     stuWrap.appendChild(d);
   });
@@ -1083,7 +1237,7 @@ function renderTeacher(){
   flagged.forEach(n=>{
     const f=FLAGS[n];
     const s=document.createElement('div');s.className='signal'+(f.level==='high'?' high':'');
-    s.innerHTML=`<div class="row"><span class="who">${n}</span><span class="tag">${f.ruleName}</span></div>
+    s.innerHTML=`<div class="row"><span class="who">${htm(n)}</span><span class="tag">${f.ruleName}</span></div>
       <div class="desc">${f.short}</div><div class="rule">▸ rule ${f.rule} · vs own baseline ${BASE[n]==null?'—':BASE[n].toFixed(1)}</div>`;
     s.onclick=()=>openDetail(n);
     sigList.appendChild(s);
@@ -1107,6 +1261,7 @@ function recompute(){ FLAGS=evaluateAll();
 renderTeacher();
 
 document.getElementById('roleKidFace').innerHTML=faceSVG(5,62);
+detectLive();
 
 /* when the teacher view opens right after a check-in, show which tile moved */
 const _showView=showView;
@@ -1121,6 +1276,7 @@ showView=function(v){
 };
 
 function openDetail(n){
+  DETAIL_NAME=n;
   document.querySelectorAll('.stu').forEach(x=>x.classList.toggle('active',x.dataset.name===n));
   const p=document.getElementById('detailPanel');p.classList.add('show');
   const f=FLAGS[n],b=BASE[n]==null?'—':BASE[n].toFixed(1);
@@ -1218,7 +1374,7 @@ function escalate(n){
       <textarea id="escNote" placeholder="What you have seen in class, in your own words. This is the most useful part of the whole record."></textarea>
     </div>
     <div class="planact" style="margin-top:13px">
-      <button class="act esc" onclick="confirmEscalate('${n}')">Send to ${WELLBEING_LEAD.split(' ')[0]} ${WELLBEING_LEAD.split(' ')[1]}</button>
+      <button class="act esc" onclick="confirmEscalate(DETAIL_NAME)">Send to ${WELLBEING_LEAD.split(' ')[0]} ${WELLBEING_LEAD.split(' ')[1]}</button>
       <button class="act" onclick="document.getElementById('escBox').innerHTML=''">Cancel</button>
     </div>
   </div>`;

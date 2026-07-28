@@ -109,6 +109,20 @@ Two deliberate choices: escalation **never requires a rule to have fired**, beca
 teacher does not need an algorithm's permission to raise a concern; and the resulting
 audit-trail entry is something **the child themselves can ask to see**.
 
+### Live mode — the audience becomes the class
+
+Served by `server.js`, the class is shared across devices: visitors join on their own
+phones and appear on the projected teacher screen within about 1.5 seconds, tagged **new**.
+They join as *extra* students, so the seeded children keep their patterns and all four
+rules still demonstrate.
+
+The server is a dumb store. **The rule engine stays in the browser** — the server never
+decides who is flagged, so "detection is auditable arithmetic" holds end to end.
+
+Opened straight from the filesystem there is no server, so the app silently falls back to
+single-device mode with the full seeded class. Nothing in the pitch depends on the network.
+See [DEPLOY.md](DEPLOY.md).
+
 ### Two roles, two surfaces
 
 The app opens on a sign-in screen, because the teacher's screen holds 24 other children's
@@ -150,9 +164,12 @@ not mean a child is fine.
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
 | `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
 | `dedupe.py` | Post-build step: pptxgenjs writes one media part per image *use*, so this collapses them (889K → 367K). |
+| `server.js` | Optional live-demo server — zero dependencies, `node server.js`. |
+| `DEPLOY.md` | How to run the live demo, and which hosts will break it. |
 
 ```bash
-open index.html
+open index.html          # single device, no server needed
+node server.js           # live mode: visitors join from their own phones
 ```
 
 To regenerate the deck after editing `deck-build.js`:
