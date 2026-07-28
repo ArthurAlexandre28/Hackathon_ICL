@@ -348,6 +348,9 @@
   .insight{background:var(--brand-soft);border-radius:14px;padding:16px}
   .insight .ai{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.8rem;color:var(--brand);margin-bottom:8px;flex-wrap:wrap}
   .insight .ai .badge{background:var(--brand);color:#fff;font-size:.6rem;padding:2px 7px;border-radius:6px;letter-spacing:.5px}
+  .aisrc{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--line);color:var(--muted)}
+  .aisrc.pending{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+  .aisrc.live{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
   .insight .ai .scope{font-weight:600;color:var(--muted);font-size:.74rem}
   .next{background:var(--card);border:1px dashed var(--brand);border-radius:12px;padding:12px 14px;font-size:.9rem}
   .next b{color:var(--brand)}
@@ -672,7 +675,8 @@
         <div class="step-n"><b>5</b> Where AI is used (and only here)</div>
         <div class="insight">
           <div class="ai"><span class="badge">AI</span> Suggested wording
-            <span class="scope">· input: the rule name + the 5 numbers · no child's name, no free text</span></div>
+            <span class="scope">· input: the rule name + the 5 numbers · no child's name, no free text</span>
+            <span class="aisrc" id="dAiSource">written template</span></div>
           <div class="next">👉 <b>Suggested next step:</b> <span id="dNext">—</span></div>
           <div class="actions" id="dActions">
             <button class="act" onclick="act(this,'noted',document.getElementById('dName').textContent)">✓ Noted — I'll check in</button>
@@ -872,6 +876,7 @@ async function detectLive(){
   document.getElementById('liveBadge').hidden=!LIVE;
   document.getElementById('joinAlt').hidden=!LIVE;
   document.getElementById('resetBtn').hidden=!LIVE;
+  if(LIVE) detectAI();
 }
 
 /* Fold the server's check-ins into the local class, then re-run the rules. */
@@ -1434,6 +1439,52 @@ function renderHomeNotes(n){
     </div>`).join('');
 }
 
+/* ---------- LIVE WORDING (optional) ----------
+   Step 5 of the panel is the only place a model is used. The written template
+   is rendered first and immediately; if a live model is configured, we ask the
+   server for a sentence and swap it in when it arrives. Any failure — no key,
+   no network, timeout, refusal — leaves the template exactly where it was.
+
+   The request carries a rule name, a threshold, a median and five numbers.
+   No child's name, no reason tags, no history. Remove this file entirely and
+   the same children are still flagged. */
+let AI_AVAILABLE=false;
+const wordingSeen={};                     // child -> the text currently shown
+
+async function detectAI(){
+  try{ const st=await api('/api/ai-status'); AI_AVAILABLE=!!st.available; }
+  catch{ AI_AVAILABLE=false; }
+}
+
+async function upgradeWording(name,f){
+  if(!LIVE||!AI_AVAILABLE||!f) return;
+  const badge=document.getElementById('dAiSource');
+  badge.textContent='asking the model…';
+  badge.className='aisrc pending';
+  try{
+    const out=await api('/api/wording',{
+      rule:f.rule, ruleName:f.ruleName, ruleText:f.ruleText,
+      median:BASE[name]==null?null:Number(BASE[name].toFixed(1)),
+      last5:DATA[name],
+    });
+    /* the teacher may have clicked elsewhere while we waited */
+    if(DETAIL_NAME!==name) return;
+    if(out.text){
+      document.getElementById('dNext').textContent=out.text;
+      wordingSeen[name]=out.text;
+      badge.textContent=out.cached?'written live by the model (cached)':'written live by the model';
+      badge.className='aisrc live';
+    }else{
+      badge.textContent='written template — model unavailable';
+      badge.className='aisrc';
+    }
+  }catch{
+    if(DETAIL_NAME!==name) return;
+    badge.textContent='written template — model unavailable';
+    badge.className='aisrc';
+  }
+}
+
 /* ---------- SUPPORT PLANS ----------
    Written by the people who know the child: a parent, a teacher, or both.
    This is the opposite of the rule engine — no inference, no scoring, just
@@ -1657,7 +1708,12 @@ function openDetail(n){
     document.getElementById('dRuleCalc').innerHTML=f.calc.replace(/\n/g,'<br>').replace('RULE FIRED','<span class="hit">RULE FIRED</span>');
     document.getElementById('dNotMean').textContent=f.notMean;
     document.getElementById('dAlts').textContent=f.alts;
-    document.getElementById('dNext').textContent=f.next;
+    /* template first — always, immediately */
+    document.getElementById('dNext').textContent=wordingSeen[n]||f.next;
+    const src=document.getElementById('dAiSource');
+    src.textContent=wordingSeen[n]?'written live by the model':'written template';
+    src.className=wordingSeen[n]?'aisrc live':'aisrc';
+    if(!wordingSeen[n]) upgradeWording(n,f);
   }else{
     document.getElementById('dRuleId').textContent='No rule fired';
     document.getElementById('dRuleText').textContent=
@@ -1667,6 +1723,9 @@ function openDetail(n){
     document.getElementById('dNotMean').textContent=`No signal does not mean ${n} is fine. A child can be struggling and still tap “great” every day. Sunny is one small input, never a substitute for knowing your class.`;
     document.getElementById('dAlts').textContent='masking · not trusting the app · having a genuinely good week';
     document.getElementById('dNext').textContent='Nothing suggested. Sunny stays quiet unless a rule fires.';
+    const src2=document.getElementById('dAiSource');
+    src2.textContent='no rule fired — nothing to word';
+    src2.className='aisrc';
   }
   document.getElementById('dActed').classList.remove('show');
   document.querySelectorAll('.act').forEach(a=>a.classList.remove('done'));
