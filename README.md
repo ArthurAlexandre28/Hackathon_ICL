@@ -160,7 +160,10 @@ not mean a child is fine.
 | File | What it is |
 |---|---|
 | `index.html` | The whole prototype — sign-in, check-in flow, rule engine, support plans, escalation. Open in any browser; no install, no server. |
-| `Sunny-Pitch-Deck.pptx` | 12-slide pitch deck, with timed speaker notes and prepared Q&A on every slide. |
+| `Sunny-Pitch-Deck.pptx` | 10-slide pitch deck (guideline limit), timed for the 10-minute slot, speaker notes split across 4 presenters, prepared Q&A on slide 10. |
+| `Sunny-Pitch-Deck.pdf` | Same deck as PDF, in case the venue machine mangles PowerPoint. |
+| `AI-TOOLS-DECLARATION.md` | Mandatory submission item 4. |
+| `TEAM-SUMMARY.md` | Mandatory submission item 5 (149 words). |
 | `deck-build.js` | The pptxgenjs generator for the deck — edit and re-run rather than hand-editing the .pptx. |
 | `faces.js` | Renders the face scale to PNG so the deck shows the same artwork as the app. |
 | `dedupe.py` | Post-build step: pptxgenjs writes one media part per image *use*, so this collapses them (889K → 367K). |
