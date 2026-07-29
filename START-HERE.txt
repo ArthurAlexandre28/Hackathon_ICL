@@ -1,0 +1,50 @@
+TEAM SUNNY — ICL Sustainable Business Innovation & AI Hackathon 2026
+Sunny: Classroom Mood Check-in  ·  Education Technology
+
+Arthur Chaves (300006351) · Ayra Inciong (111580) · Ben Harley (111816)
+
+--------------------------------------------------------------------
+PROJECT REPOSITORY (submission item 3)
+--------------------------------------------------------------------
+https://github.com/ArthurAlexandre28/Hackathon_ICL
+
+Public. The README renders with full formatting there, and
+FEATURE-GUIDE.md displays all 29 screenshots inline.
+
+--------------------------------------------------------------------
+TRY THE APP — no installation needed
+--------------------------------------------------------------------
+Double-click  index.html
+
+It opens in any browser and runs the complete prototype offline:
+24 children, 30 days of history, all five detection rules, support
+plans, and the escalation trail.
+
+  Student view : class code ROOM6, then tap any name
+  Teacher view : PIN 2026
+
+--------------------------------------------------------------------
+WHAT TO READ
+--------------------------------------------------------------------
+  START-HERE.txt              this file
+  README.pdf                  full technical write-up
+  FEATURE-GUIDE.pdf           every screen, screenshotted (53 pages)
+  TARGET-USER-AND-EVIDENCE.pdf  age group + supporting research
+  AI-TOOLS-DECLARATION.pdf    submission item 4
+  TEAM-SUMMARY.pdf            submission item 5 (147 words)
+
+.md versions of each are included for anyone who prefers them.
+
+--------------------------------------------------------------------
+NOTES
+--------------------------------------------------------------------
+All class data is synthetic. No real child was involved at any point.
+
+Detection is deterministic arithmetic running in the browser — five
+fixed rules, no model involved in deciding which child is flagged.
+Generative AI writes only the suggested wording a teacher reads.
+Full details in AI-TOOLS-DECLARATION.pdf.
+
+server.js powers the optional live multi-device demo and needs
+Node.js plus "npm install" — see DEPLOY.md. It is not required to
+review the project; index.html alone is the complete prototype.

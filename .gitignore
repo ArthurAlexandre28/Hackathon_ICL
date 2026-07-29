@@ -1,2 +1,11 @@
 node_modules/
 .env
+
+# PDF renders of the Markdown docs — build artifacts for the Drive submission.
+# GitHub renders the .md files with images natively, so these add nothing here.
+# Rebuild with: ./build-submission.sh
+AI-TOOLS-DECLARATION.pdf
+FEATURE-GUIDE.pdf
+README.pdf
+TARGET-USER-AND-EVIDENCE.pdf
+TEAM-SUMMARY.pdf
